@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <style name="main_title_select_line_style">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:src">@color/contact_title_line_blue</item>
+    </style>
+
+    <style name="contact_title_text_style">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/contacts_title_nomal_color</item>
+    </style>
+     <style name="contact_title_jianjiao_style">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/tab_jianjiao</item>
+    </style>
+
+    <style name="contact_title_devide_style">
+        <item name="android:layout_width">0.1dip</item>
+        <item name="android:layout_height">14dip</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:background">@drawable/devide_line</item>
+    </style>
+
+    <style name="dot_style">
+        <item name="android:layout_width">10dip</item>
+        <item name="android:layout_height">10dip</item>
+        <item name="android:background">@drawable/dot_normal</item>
+        <item name="android:layout_marginLeft">10dip</item>
+        <item name="android:layout_marginRight">10dip</item>
+    </style>
+     <!-- BaseAlertDialog style -->
+    <style name="myProgressBarStyleLarge">
+        <item name="android:indeterminateDrawable">@anim/loading_rotate</item>
+        <item name="android:minWidth">@dimen/progress_bar</item>
+        <item name="android:maxWidth">@dimen/progress_bar</item>
+        <item name="android:minHeight">@dimen/progress_bar</item>
+        <item name="android:maxHeight">@dimen/progress_bar</item>
+    </style>
+    
+</resources>

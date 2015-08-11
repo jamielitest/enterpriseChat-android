@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enterprise">应用</string>
+    <string name="announcement">公告</string>
+    <string name="undo">Undo</string>
+    <string name="undoall">Undo All</string>
+    <string name="enterprice_notice">公告</string>
+</resources>
