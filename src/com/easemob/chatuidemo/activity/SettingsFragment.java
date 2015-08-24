@@ -122,6 +122,9 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	 */
 	private LinearLayout pushNick;
 	
+	
+	private RelativeLayout rlProfile;
+	
 	DemoHXSDKModel model;
 	
 	@Override
@@ -139,6 +142,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		rl_switch_vibrate = (RelativeLayout) getView().findViewById(R.id.rl_switch_vibrate);
 		rl_switch_speaker = (RelativeLayout) getView().findViewById(R.id.rl_switch_speaker);
 		rl_switch_chatroom_leave = (RelativeLayout) getView().findViewById(R.id.rl_switch_chatroom_owner_leave);
+		rlProfile = (RelativeLayout) getView().findViewById(R.id.rl_profile);
 
 		iv_switch_open_notification = (ImageView) getView().findViewById(R.id.iv_switch_open_notification);
 		iv_switch_close_notification = (ImageView) getView().findViewById(R.id.iv_switch_close_notification);
@@ -164,7 +168,8 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		blacklistContainer = (LinearLayout) getView().findViewById(R.id.ll_black_list);
 		llDiagnose=(LinearLayout) getView().findViewById(R.id.ll_diagnose);
 		pushNick=(LinearLayout) getView().findViewById(R.id.ll_set_push_nick);
-		
+
+		rlProfile.setOnClickListener(this);
 		blacklistContainer.setOnClickListener(this);
 		rl_switch_notification.setOnClickListener(this);
 		rl_switch_sound.setOnClickListener(this);
@@ -329,6 +334,9 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			break;
 		case R.id.ll_set_push_nick:
 			startActivity(new Intent(getActivity(), OfflinePushNickActivity.class));
+			break;
+		case R.id.rl_profile:
+			startActivity(new Intent(getActivity(), UserProfileActivity.class));
 			break;
 		default:
 			break;
