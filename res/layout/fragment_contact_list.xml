@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_top_bar"
         android:background="@color/top_bar_normal_bg"
-        android:visibility="gone"
         android:gravity="center_vertical" >
 
         <TextView
@@ -18,9 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/address_book"
-            android:textColor="@color/bottom_text_color_normal"
+            android:textColor="#000"
             android:textSize="18sp" />
-
 
         <ImageView
             android:id="@+id/iv_new_contact"
@@ -30,7 +28,8 @@
             android:background="@drawable/common_tab_bg"
             android:clickable="true"
             android:scaleType="centerInside"
-            android:src="@drawable/add" />
+            android:src="@drawable/add"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <FrameLayout
@@ -62,31 +61,117 @@
                     android:layout_marginLeft="6dp"
                     android:text="@string/now_refresh_list" />
             </LinearLayout>
-            
-            <include 
-                android:id="@+id/search_bar_view"
-                layout="@layout/search_bar_with_padding"/>
 
+            <include
+                android:id="@+id/search_bar_view"
+                layout="@layout/search_bar_with_padding" />
+
+            <LinearLayout
+                android:id="@+id/contact_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/search_bar_view"
+                android:background="#fff"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    
+                    android:id="@+id/huanxin_contact_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:paddingLeft="8dp" >
+
+                    <ImageView
+                        android:id="@+id/icon_huan"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/icon_organization" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/icon_huan"
+                        android:text="环信"
+                        android:textColor="#000"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/icon_arrow_right" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#dddddd" />
+
+                <RelativeLayout
+                    android:id="@+id/group_contact_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:paddingLeft="8dp" >
+
+                    <ImageView
+                        android:id="@+id/icon_group"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/icon_group" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/icon_group"
+                        android:text="群组"
+                        android:textColor="#000"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/icon_arrow_right" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:background="#dbdbdb" />
+            </LinearLayout>
 
             <ListView
                 android:id="@+id/list"
-                android:layout_below="@+id/search_bar_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_below="@+id/contact_list_view"
                 android:background="@android:color/transparent"
                 android:cacheColorHint="#00000000"
                 android:descendantFocusability="afterDescendants"
                 android:divider="@color/divider_list"
                 android:dividerHeight="1px"
-                android:fastScrollEnabled="false" />
- 			<com.easemob.chatuidemo.widget.Sidebar
+                android:fastScrollEnabled="false"
+                android:scrollbars="none" />
+
+            <com.easemob.chatuidemo.widget.Sidebar
                 android:id="@+id/sidebar"
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:background="@android:color/transparent"
-                android:clickable="true" />
- 			
+                android:clickable="true"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/floating_header"
                 android:layout_width="wrap_content"
@@ -99,27 +184,27 @@
                 android:textColor="@android:color/white"
                 android:textSize="40sp"
                 android:visibility="invisible" />
-
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_gravity="center"
-            android:visibility="gone"
-            android:id="@+id/progress_bar">
-	        <ProgressBar
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_gravity="center_horizontal"/>
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/now_refresh_list"
-                android:layout_gravity="center_horizontal"/>
-	    </LinearLayout>
-        
+                android:layout_gravity="center_horizontal"
+                android:text="@string/now_refresh_list" />
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

@@ -17,9 +17,18 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/session"
-            android:textColor="#fff"
+            android:textColor="#000"
             android:textSize="18sp" />
-
+		<ImageView 
+		    android:id="@+id/btnAdd"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true"
+		    android:layout_alignParentRight="true"
+		    android:padding="5dp"
+		    android:layout_marginRight="10dp"
+		    android:src="@drawable/add"
+		    />
     </RelativeLayout>
     <include layout="@layout/search_bar" />
 

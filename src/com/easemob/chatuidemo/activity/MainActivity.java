@@ -84,8 +84,8 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	private TextView unread_enterprise_number;
 
 	private Button[] mTabs;
-	private ContactFragment contactFragment;
-//	private ContactlistFragment contactListFragment;
+//	private ContactFragment contactFragment;
+	private ContactlistFragment contactListFragment;
 	// private ChatHistoryFragment chatHistoryFragment;
 	private ChatAllHistoryFragment chatHistoryFragment;
 	private SettingsFragment settingFragment;
@@ -146,14 +146,14 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		// chatHistoryFragment = new ChatHistoryFragment();
 		// 显示所有人消息记录的fragment
 		chatHistoryFragment = new ChatAllHistoryFragment();
-//		contactListFragment = new ContactlistFragment();
-		contactFragment = new ContactFragment();
+		contactListFragment = new ContactlistFragment();
+//		contactFragment = new ContactFragment();
 		enterpriseFragment = new EnterpriseFragment();//Enterprise Application
 		settingFragment = new SettingsFragment();
-		fragments = new Fragment[] { chatHistoryFragment, contactFragment,enterpriseFragment, settingFragment };
+		fragments = new Fragment[] { chatHistoryFragment, contactListFragment,enterpriseFragment, settingFragment };
 		// 添加显示第一个fragment
 		getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, chatHistoryFragment)
-				.add(R.id.fragment_container, contactFragment).hide(contactFragment).show(chatHistoryFragment)
+				.add(R.id.fragment_container, contactListFragment).hide(contactListFragment).show(chatHistoryFragment)
 				.commit();
 		
 		init();
@@ -219,37 +219,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
                     setUserHearder(username, user);
                     userlist.put(username, user);
                 }
-                // 添加user"申请与通知"
-                User newFriends = new User();
-                newFriends.setUsername(Constant.NEW_FRIENDS_USERNAME);
-                String strChat = context.getString(R.string.Application_and_notify);
-                newFriends.setNick(strChat);
-        
-                userlist.put(Constant.NEW_FRIENDS_USERNAME, newFriends);
-                // 添加"群聊"
-                User groupUser = new User();
-                String strGroup = context.getString(R.string.group_chat);
-                groupUser.setUsername(Constant.GROUP_USERNAME);
-                groupUser.setNick(strGroup);
-                groupUser.setHeader("");
-                userlist.put(Constant.GROUP_USERNAME, groupUser);
-                
-                 // 添加"聊天室"
-                User chatRoomItem = new User();
-                String strChatRoom = context.getString(R.string.chat_room);
-                chatRoomItem.setUsername(Constant.CHAT_ROOM);
-                chatRoomItem.setNick(strChatRoom);
-                chatRoomItem.setHeader("");
-                userlist.put(Constant.CHAT_ROOM, chatRoomItem);
-                
-                // 添加"Robot"
-        		User robotUser = new User();
-        		String strRobot = context.getString(R.string.robot_chat);
-        		robotUser.setUsername(Constant.CHAT_ROBOT);
-        		robotUser.setNick(strRobot);
-        		robotUser.setHeader("");
-        		userlist.put(Constant.CHAT_ROBOT, robotUser);
-        		
                  // 存入内存
                 DemoApplication.getInstance().setContactList(userlist);
                  // 存入db
@@ -303,9 +272,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
         } else {
             headerName = user.getUsername();
         }
-        if (username.equals(Constant.NEW_FRIENDS_USERNAME)) {
-            user.setHeader("");
-        } else if (Character.isDigit(headerName.charAt(0))) {
+        if (Character.isDigit(headerName.charAt(0))) {
             user.setHeader("#");
         } else {
             user.setHeader(HanziToPinyin.getInstance().get(headerName.substring(0, 1)).get(0).target.substring(0, 1)
@@ -482,9 +449,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	 */
 	public int getUnreadAddressCountTotal() {
 		int unreadAddressCountTotal = 0;
-		if (DemoApplication.getInstance().getContactList().get(Constant.NEW_FRIENDS_USERNAME) != null)
-			unreadAddressCountTotal = DemoApplication.getInstance().getContactList().get(Constant.NEW_FRIENDS_USERNAME)
-					.getUnreadMsgCount();
+//		if (DemoApplication.getInstance().getContactList().get(Constant.NEW_FRIENDS_USERNAME) != null)
+//			unreadAddressCountTotal = DemoApplication.getInstance().getContactList().get(Constant.NEW_FRIENDS_USERNAME)
+//					.getUnreadMsgCount();
 		return unreadAddressCountTotal;
 	}
 
@@ -853,9 +820,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		// 保存msg
 		inviteMessgeDao.saveMessage(msg);
 		// 未读数加1
-		User user = DemoApplication.getInstance().getContactList().get(Constant.NEW_FRIENDS_USERNAME);
-		if (user.getUnreadMsgCount() == 0)
-			user.setUnreadMsgCount(user.getUnreadMsgCount() + 1);
+//		User user = DemoApplication.getInstance().getContactList().get(Constant.NEW_FRIENDS_USERNAME);
+//		if (user.getUnreadMsgCount() == 0)
+//			user.setUnreadMsgCount(user.getUnreadMsgCount() + 1);
 	}
 
 	/**
@@ -873,9 +840,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		} else {
 			headerName = user.getUsername();
 		}
-		if (username.equals(Constant.NEW_FRIENDS_USERNAME)) {
-			user.setHeader("");
-		} else if (Character.isDigit(headerName.charAt(0))) {
+		if (Character.isDigit(headerName.charAt(0))) {
 			user.setHeader("#");
 		} else {
 			user.setHeader(HanziToPinyin.getInstance().get(headerName.substring(0, 1)).get(0).target.substring(0, 1)
@@ -1011,6 +976,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
+		setIntent(intent);
 		if (getIntent().getBooleanExtra("conflict", false) && !isConflictDialogShow) {
 			showConflictDialog();
 		} else if (getIntent().getBooleanExtra(Constant.ACCOUNT_REMOVED, false) && !isAccountRemovedDialogShow) {
@@ -1052,9 +1018,4 @@ public class MainActivity extends BaseActivity implements EMEventListener {
         registerReceiver(internalDebugReceiver, filter);
     }
 
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		//getMenuInflater().inflate(R.menu.context_tab_contact, menu);
-	}
 }

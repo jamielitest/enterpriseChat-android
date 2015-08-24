@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -37,6 +39,7 @@ public class DepartmentAdapter extends BaseAdapter{
 	private List<QXUser> mUsers;
 	private String mPath;
 	private ListView mListView;
+	private TextView txtTitle = null;
 	
 	public DepartmentAdapter(Context context, ListView listView, String path, List<String> paths, List<QXUser> list){
 		mContext = context;
@@ -45,6 +48,8 @@ public class DepartmentAdapter extends BaseAdapter{
 		mPaths = paths;
 		mUsers = list;
 		inflater = LayoutInflater.from(context);
+		
+		txtTitle = (TextView) ((Activity)context).findViewById(R.id.txtTitle);
 	}
 
 	@Override
@@ -161,7 +166,7 @@ public class DepartmentAdapter extends BaseAdapter{
 	                     mListView.setAdapter(new DepartmentAdapter(mContext,mListView,"/",CommonUtils.getChildDepartments("/"),CommonUtils.getUsersWithDepartment(userlist, "/")));   
 	                    }
 	                });
-			        root.setText("组织架构");
+			        root.setText("环信");
 			        container.addView(root);
 			        if(count>0){
 			            final String[] segments = new String[count];
@@ -192,7 +197,14 @@ public class DepartmentAdapter extends BaseAdapter{
 			                }
 			            }
 			        }
-			        container.getChildAt(container.getChildCount() - 1).setBackgroundResource(R.drawable.button_dept_highlighted);
+//			        container.getChildAt(container.getChildCount() - 1).setBackgroundResource(R.drawable.button_dept_highlighted);
+			        if(container.getChildAt(container.getChildCount() - 1) instanceof Button){
+			        	Button lastBtn = (Button) container.getChildAt(container.getChildCount() - 1);
+			        	lastBtn.setTextColor(Color.BLUE);
+			        	txtTitle.setText(lastBtn.getText());
+			        }
+			        
+			        
 			    }
 		}else{
 			 Object item = getItem(position);

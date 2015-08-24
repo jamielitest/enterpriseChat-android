@@ -160,8 +160,6 @@ public class LoginActivity extends BaseActivity {
 							// ** manually load all local groups and
 						    EMGroupManager.getInstance().loadAllGroups();
 							EMChatManager.getInstance().loadAllConversations();
-							// 处理好友和群组
-							initializeContacts();
 						} catch (Exception e) {
 							e.printStackTrace();
 							// 取好友或者群聊失败，不让进入主页面
@@ -224,40 +222,6 @@ public class LoginActivity extends BaseActivity {
 		
 	}
 
-	private void initializeContacts() {
-		Map<String, User> userlist = new HashMap<String, User>();
-		// 添加user"申请与通知"
-		User newFriends = new User();
-		newFriends.setUsername(Constant.NEW_FRIENDS_USERNAME);
-		String strChat = getResources().getString(
-				R.string.Application_and_notify);
-		newFriends.setNick(strChat);
-
-		userlist.put(Constant.NEW_FRIENDS_USERNAME, newFriends);
-		// 添加"群聊"
-		User groupUser = new User();
-		String strGroup = getResources().getString(R.string.group_chat);
-		groupUser.setUsername(Constant.GROUP_USERNAME);
-		groupUser.setNick(strGroup);
-		groupUser.setHeader("");
-		userlist.put(Constant.GROUP_USERNAME, groupUser);
-		
-		// 添加"Robot"
-		User robotUser = new User();
-		String strRobot = getResources().getString(R.string.robot_chat);
-		robotUser.setUsername(Constant.CHAT_ROBOT);
-		robotUser.setNick(strRobot);
-		robotUser.setHeader("");
-		userlist.put(Constant.CHAT_ROBOT, robotUser);
-		
-		// 存入内存
-		DemoApplication.getInstance().setContactList(userlist);
-		// 存入db
-		UserDao dao = new UserDao(LoginActivity.this);
-		List<User> users = new ArrayList<User>(userlist.values());
-		dao.saveContactList(users);
-	}
-	
 	/**
 	 * 注册
 	 * 

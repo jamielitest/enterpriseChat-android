@@ -75,10 +75,7 @@ public class DemoDBManager {
                     headerName = user.getUsername();
                 }
                 
-                if (username.equals(Constant.NEW_FRIENDS_USERNAME) || username.equals(Constant.GROUP_USERNAME)
-                        || username.equals(Constant.CHAT_ROOM)|| username.equals(Constant.CHAT_ROBOT)) {
-                    user.setHeader("");
-                } else if (Character.isDigit(headerName.charAt(0))) {
+                if (Character.isDigit(headerName.charAt(0))) {
                     user.setHeader("#");
                 } else {
                     user.setHeader(HanziToPinyin.getInstance().get(headerName.substring(0, 1))

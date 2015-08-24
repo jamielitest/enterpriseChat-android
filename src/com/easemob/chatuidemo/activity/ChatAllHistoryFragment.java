@@ -29,6 +29,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ import com.easemob.chatuidemo.Constant;
 import com.easemob.chatuidemo.DemoApplication;
 import com.easemob.chatuidemo.adapter.ChatAllHistoryAdapter;
 import com.easemob.chatuidemo.db.InviteMessgeDao;
+import com.easemob.chatuidemo.widget.AddPopupWindow;
 import com.easemob.qixin.R;
 
 /**
@@ -55,6 +57,7 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 	private EditText query;
 	private ImageButton clearSearch;
 	public RelativeLayout errorItem;
+	private ImageView btnAdd;
 
 	public TextView errorText;
 	private boolean hidden;
@@ -73,7 +76,8 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 		inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 		errorItem = (RelativeLayout) getView().findViewById(R.id.rl_error_item);
 		errorText = (TextView) errorItem.findViewById(R.id.tv_connect_errormsg);		
-		
+		btnAdd = (ImageView) getView().findViewById(R.id.btnAdd);
+		btnAdd.setOnClickListener(this);
 		conversationList.addAll(loadConversationsWithRecentChat());
 		listView = (ListView) getView().findViewById(R.id.list);
 		adapter = new ChatAllHistoryAdapter(getActivity(), 1, conversationList);
@@ -295,7 +299,26 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
         }
     }
 
+	private AddPopupWindow addPopupWindow;
+	
     @Override
-    public void onClick(View v) {        
+    public void onClick(View v) {    
+    	switch (v.getId()) {
+		case R.id.btnAdd:
+			addPopupWindow = new AddPopupWindow(getActivity());
+			addPopupWindow.showAsDropDown(btnAdd);
+			break;
+
+		default:
+			break;
+		}
+    }
+    
+    @Override
+    public void onDestroy() {
+    	super.onDestroy();
+    	if(addPopupWindow!=null&&addPopupWindow.isShowing()){
+    		addPopupWindow.dismiss();
+    	}
     }
 }

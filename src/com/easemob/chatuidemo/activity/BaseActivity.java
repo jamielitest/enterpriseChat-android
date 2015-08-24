@@ -24,9 +24,9 @@ import com.umeng.analytics.MobclickAgent;
 
 public class BaseActivity extends FragmentActivity {
 
-    @Override
+     @Override
     protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
+    	super.onCreate(arg0);
     }
 
     @Override

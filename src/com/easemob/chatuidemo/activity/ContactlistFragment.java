@@ -67,7 +67,7 @@ import com.easemob.util.EMLog;
  * 联系人列表页
  * 
  */
-public class ContactlistFragment extends Fragment {
+public class ContactlistFragment extends Fragment implements OnClickListener {
 	public static final String TAG = "ContactlistFragment";
 	private ContactAdapter adapter;
 	private List<User> contactList;
@@ -143,6 +143,10 @@ public class ContactlistFragment extends Fragment {
 		listView = (ListView) getView().findViewById(R.id.list);
 		sidebar = (Sidebar) getView().findViewById(R.id.sidebar);
 		sidebar.setListView(listView);
+        View huanxinView = getView().findViewById(R.id.huanxin_contact_list);
+        View groupView = getView().findViewById(R.id.group_contact_list);
+        huanxinView.setOnClickListener(this);
+        groupView.setOnClickListener(this);
         
 		//黑名单列表
 		blackList = EMContactManager.getInstance().getBlackListUsernames();
@@ -187,24 +191,9 @@ public class ContactlistFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String username = adapter.getItem(position).getUsername();
-				if (Constant.NEW_FRIENDS_USERNAME.equals(username)) {
-					// 进入申请与通知页面
-					User user = DemoApplication.getInstance().getContactList().get(Constant.NEW_FRIENDS_USERNAME);
-					user.setUnreadMsgCount(0);
-					startActivity(new Intent(getActivity(), NewFriendsMsgActivity.class));
-				} else if (Constant.GROUP_USERNAME.equals(username)) {
-					// 进入群聊列表页面
-					startActivity(new Intent(getActivity(), GroupsActivity.class));
-				} else if(Constant.CHAT_ROOM.equals(username)){
-					//进入聊天室列表页面
-				    startActivity(new Intent(getActivity(), PublicChatRoomsActivity.class));
-				}else if(Constant.CHAT_ROBOT.equals(username)){
-					//进入Robot列表页面
-//					startActivity(new Intent(getActivity(), RobotsActivity.class));
-				}else {
-					// demo中直接进入聊天页面，实际一般是进入用户详情页
-					startActivity(new Intent(getActivity(), ChatActivity.class).putExtra("userId", adapter.getItem(position).getUsername()));
-				}
+				// demo中直接进入聊天页面，实际一般是进入用户详情页
+				startActivity(new Intent(getActivity(), ChatActivity.class).putExtra("userId", adapter
+						.getItem(position).getUsername()));
 			}
 		});
 		listView.setOnTouchListener(new OnTouchListener() {
@@ -423,11 +412,7 @@ public class ContactlistFragment extends Fragment {
 		Iterator<Entry<String, User>> iterator = users.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Entry<String, User> entry = iterator.next();
-			if (!entry.getKey().equals(Constant.NEW_FRIENDS_USERNAME)
-			        && !entry.getKey().equals(Constant.GROUP_USERNAME)
-			        && !entry.getKey().equals(Constant.CHAT_ROOM)
-					&& !entry.getKey().equals(Constant.CHAT_ROBOT)
-					&& !blackList.contains(entry.getKey()))
+			if (!blackList.contains(entry.getKey()))
 				contactList.add(entry.getValue());
 		}
 		// 排序
@@ -439,19 +424,6 @@ public class ContactlistFragment extends Fragment {
 			}
 		});
 
-		if(users.get(Constant.CHAT_ROBOT)!=null){
-			contactList.add(0, users.get(Constant.CHAT_ROBOT));
-		}
-		// 加入"群聊"和"聊天室"
-        if(users.get(Constant.CHAT_ROOM) != null)
-            contactList.add(0, users.get(Constant.CHAT_ROOM));
-        if(users.get(Constant.GROUP_USERNAME) != null)
-            contactList.add(0, users.get(Constant.GROUP_USERNAME));
-        
-		// 把"申请与通知"添加到首位
-		if(users.get(Constant.NEW_FRIENDS_USERNAME) != null)
-		    contactList.add(0, users.get(Constant.NEW_FRIENDS_USERNAME));
-		
 	}
 	
 	void hideSoftKeyboard() {
@@ -471,5 +443,19 @@ public class ContactlistFragment extends Fragment {
 	    	outState.putBoolean(Constant.ACCOUNT_REMOVED, true);
 	    }
 	    
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.huanxin_contact_list:
+			Toast.makeText(getActivity(), "huanxin", Toast.LENGTH_SHORT).show();
+			break;
+		case R.id.group_contact_list:
+			Toast.makeText(getActivity(), "group", Toast.LENGTH_SHORT).show();
+			break;
+		default:
+			break;
+		}
 	}
 }
