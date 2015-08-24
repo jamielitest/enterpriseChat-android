@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:background="@drawable/mm_listitem"
     android:gravity="center_vertical" >
 
-    <ImageView
+    <com.easemob.chatuidemo.widget.CircleImageView
         android:id="@+id/avatar"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="4dp"
-        android:padding="5dp"
-        android:src="@drawable/group_icon" />
+        app:border_width="1dp"
+        app:border_color="#fff"
+        android:layout_margin="5dp"
+        android:src="@drawable/icon_group" />
 
     <TextView
         android:id="@+id/name"

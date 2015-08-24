@@ -452,7 +452,7 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 			getActivity().startActivity(new Intent(getActivity(), ContactsActivity.class));
 			break;
 		case R.id.group_contact_list:
-			Toast.makeText(getActivity(), "group", Toast.LENGTH_SHORT).show();
+			getActivity().startActivity(new Intent(getActivity(), GroupsActivity.class));
 			break;
 		default:
 			break;
