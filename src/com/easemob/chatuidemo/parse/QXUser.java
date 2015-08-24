@@ -53,6 +53,7 @@ public class QXUser extends ParseUser{
 			return;
 		}
 		put(PROP_HXID, hxid);
+		setObjectId(hxid);
 	}
 
 	public String getNick() {

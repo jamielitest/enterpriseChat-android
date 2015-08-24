@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -23,8 +24,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.easemob.chatuidemo.DemoApplication;
+import com.easemob.chatuidemo.activity.ChatActivity;
 import com.easemob.chatuidemo.parse.QXUser;
 import com.easemob.chatuidemo.utils.CommonUtils;
 import com.easemob.qixin.R;
@@ -183,6 +186,10 @@ public class DepartmentAdapter extends BaseAdapter{
 			            for(int i=1;i<count;i++){
 			                String b = buttons[i];
 			                if(b.length()>0){
+							TextView textView = new TextView(mContext);
+							textView.setText(">");
+							container.addView(textView);
+
 			                    Button tmpButton = (Button) inflater.inflate(R.layout.button_department, container, false);
 	                            final String s = segments[i];
 	                            tmpButton.setOnClickListener(new OnClickListener() {
@@ -194,6 +201,7 @@ public class DepartmentAdapter extends BaseAdapter{
 	                            });
 	                            tmpButton.setText(b);
 	                            container.addView(tmpButton);
+	                           
 			                }
 			            }
 			        }
@@ -230,6 +238,18 @@ public class DepartmentAdapter extends BaseAdapter{
 	                    holder.signature.setVisibility(View.GONE);
 	                }
 			        holder.avatar.setImageResource(R.drawable.default_avatar);
+			        
+			        convertView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+//							mContext.startActivity(new Intent(mContext,ChatActivity.class).putExtra("userId", user.getObjectId()));
+//							Toast.makeText(mContext, "objid:"+user.getObjectId(), Toast.LENGTH_SHORT).show();
+							Toast.makeText(mContext, "objid:"+user.getHXid(), Toast.LENGTH_SHORT).show();
+							
+						}
+					});
+			        
 			    }else{
 			        if (convertView == null) {
 	                    convertView = inflater.inflate(R.layout.row_department, parent, false); 

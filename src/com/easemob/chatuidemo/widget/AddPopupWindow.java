@@ -1,6 +1,7 @@
 package com.easemob.chatuidemo.widget;
 
 import com.easemob.chatuidemo.activity.ContactsActivity;
+import com.easemob.chatuidemo.activity.GroupsActivity;
 import com.easemob.qixin.R;
 
 import android.content.Context;
@@ -45,6 +46,7 @@ public class AddPopupWindow  extends PopupWindow{
 			@Override
 			public void onClick(View v) {
 				AddPopupWindow.this.dismiss();
+				context.startActivity(new Intent(context, GroupsActivity.class));
 			}
 		});
 		

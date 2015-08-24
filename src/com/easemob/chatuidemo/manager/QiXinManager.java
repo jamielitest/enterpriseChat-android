@@ -19,6 +19,7 @@ import com.easemob.chatuidemo.db.DbOpenHelper;
 import com.easemob.chatuidemo.parse.DepartmentEntity;
 import com.easemob.chatuidemo.parse.ParseManager;
 import com.easemob.chatuidemo.parse.QXUser;
+import com.easemob.util.EMLog;
 import com.parse.ParseException;
 
 public class QiXinManager {
@@ -128,7 +129,11 @@ public class QiXinManager {
                         user.setAvatorPath(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_AVATORPATH)));
                         user.setAvatorUrl(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_AVATORURL)));
                         user.setEmail(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_EMAIL)));
-                        user.setHeader(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_HEADER)));
+                        try {
+                        	user.setHeader(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_HEADER)));
+						} catch (Exception e) {
+							EMLog.e("###", e.getMessage());
+						}
                         user.setHXid(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_HXID)));
                         user.setMobile(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_MOBILE)));
                         user.setNick(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_NICK)));

@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textColor="#ffffff"
+            android:textColor="#000"
             android:textSize="20sp" />
 
         <RelativeLayout
@@ -56,7 +56,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/to_group_details_normal" />
+                android:src="@drawable/icon_group_setting" />
         </RelativeLayout>
     </RelativeLayout>
 
