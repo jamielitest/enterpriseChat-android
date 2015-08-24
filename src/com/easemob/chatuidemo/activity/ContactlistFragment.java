@@ -449,7 +449,7 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.huanxin_contact_list:
-			Toast.makeText(getActivity(), "huanxin", Toast.LENGTH_SHORT).show();
+			getActivity().startActivity(new Intent(getActivity(), ContactsActivity.class));
 			break;
 		case R.id.group_contact_list:
 			Toast.makeText(getActivity(), "group", Toast.LENGTH_SHORT).show();

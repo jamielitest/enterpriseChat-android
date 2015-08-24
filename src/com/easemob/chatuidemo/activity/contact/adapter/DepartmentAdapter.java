@@ -183,6 +183,10 @@ public class DepartmentAdapter extends BaseAdapter{
 			            for(int i=1;i<count;i++){
 			                String b = buttons[i];
 			                if(b.length()>0){
+							TextView textView = new TextView(mContext);
+							textView.setText(">");
+							container.addView(textView);
+
 			                    Button tmpButton = (Button) inflater.inflate(R.layout.button_department, container, false);
 	                            final String s = segments[i];
 	                            tmpButton.setOnClickListener(new OnClickListener() {
@@ -194,6 +198,7 @@ public class DepartmentAdapter extends BaseAdapter{
 	                            });
 	                            tmpButton.setText(b);
 	                            container.addView(tmpButton);
+	                           
 			                }
 			            }
 			        }

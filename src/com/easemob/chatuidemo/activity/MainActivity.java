@@ -204,42 +204,28 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	}
 	
 	static void asyncFetchContactsFromServer(){
-	    HXSDKHelper.getInstance().asyncFetchContactsFromServer(new EMValueCallBack<List<String>>(){
+		HXSDKHelper.getInstance().asyncFetchContactsFromServer(new EMCallBack() {
 
-            @Override
-            public void onSuccess(List<String> usernames) {
-                Context context = HXSDKHelper.getInstance().getAppContext();
-                
-                System.out.println("----------------"+usernames.toString());
-                EMLog.d("roster", "contacts size: " + usernames.size());
-                Map<String, User> userlist = new HashMap<String, User>();
-                for (String username : usernames) {
-                    User user = new User();
-                    user.setUsername(username);
-                    setUserHearder(username, user);
-                    userlist.put(username, user);
-                }
-                 // 存入内存
-                DemoApplication.getInstance().setContactList(userlist);
-                 // 存入db
-                UserDao dao = new UserDao(context);
-                List<User> users = new ArrayList<User>(userlist.values());
-                dao.saveContactList(users);
+			@Override
+			public void onSuccess() {
+				HXSDKHelper.getInstance().notifyContactsSyncListener(true);
+				if (HXSDKHelper.getInstance().isGroupsSyncedWithServer()) {
+					HXSDKHelper.getInstance().notifyForRecevingEvents();
+				}
+			}
 
-                HXSDKHelper.getInstance().notifyContactsSyncListener(true);
-                
-                if(HXSDKHelper.getInstance().isGroupsSyncedWithServer()){
-                    HXSDKHelper.getInstance().notifyForRecevingEvents();
-                }
-                
-            }
+			@Override
+			public void onProgress(int progress, String status) {
+				// TODO Auto-generated method stub
 
-            @Override
-            public void onError(int error, String errorMsg) {
-                HXSDKHelper.getInstance().notifyContactsSyncListener(false);
-            }
-	        
-	    });
+			}
+
+			@Override
+			public void onError(int code, String error) {
+				HXSDKHelper.getInstance().notifyContactsSyncListener(false);
+
+			}
+		});
 	}
 	
 	static void asyncFetchBlackListFromServer(){

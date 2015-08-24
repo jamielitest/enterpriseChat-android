@@ -2,7 +2,5 @@
 <Button xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_marginLeft="-10dp"
     android:background="@null"
-    android:drawableRight="@drawable/button_dept_normal"
     android:textColor="@android:color/black" />

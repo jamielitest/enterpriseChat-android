@@ -32,6 +32,7 @@ import com.easemob.applib.model.HXNotifier.HXNotificationInfoProvider;
 import com.easemob.applib.model.HXSDKModel;
 import com.easemob.chat.EMChat;
 import com.easemob.chat.EMChatConfig.EMEnvMode;
+import com.easemob.chatuidemo.DemoApplication;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMChatOptions;
 import com.easemob.chat.EMContactManager;
@@ -532,44 +533,42 @@ public abstract class HXSDKHelper {
         }
     }
     
-    public void asyncFetchContactsFromServer(final EMValueCallBack<List<String>> callback){
+    public void asyncFetchContactsFromServer(final EMCallBack callback){
         if(isSyncingContactsWithServer){
             return;
         }
         
         isSyncingContactsWithServer = true;
-        
-        new Thread(){
-            @Override
-            public void run(){
-                List<String> usernames = null;
-                try {
-                    usernames = EMContactManager.getInstance().getContactUserNames();
-                    
-                    // in case that logout already before server returns, we should return immediately
-                    if(!EMChat.getInstance().isLoggedIn()){
-                        return;
-                    }
-                    
-                    hxModel.setContactSynced(true);
-                    
-                    isContactsSyncedWithServer = true;
-                    isSyncingContactsWithServer = false;
-                    if(callback != null){
-                        callback.onSuccess(usernames);
-                    }
-                } catch (EaseMobException e) {
-                    hxModel.setContactSynced(false);
-                    isContactsSyncedWithServer = false;
-                    isSyncingContactsWithServer = false;
-                    e.printStackTrace();
-                    if(callback != null){
-                        callback.onError(e.getErrorCode(), e.toString());
-                    }
+        DemoApplication.getInstance().getQXManager().saveUserAndDepart(new EMCallBack() {
+			
+			@Override
+			public void onSuccess() {
+				 hxModel.setContactSynced(true);
+                 
+                 isContactsSyncedWithServer = true;
+                 isSyncingContactsWithServer = false;
+                 if(callback != null){
+                     callback.onSuccess();
+                 }
+			}
+			
+			@Override
+			public void onProgress(int progress, String status) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onError(int code, String error) {
+				hxModel.setContactSynced(false);
+                isContactsSyncedWithServer = false;
+                isSyncingContactsWithServer = false;
+                if(callback != null){
+                    callback.onError(code, error);
                 }
-                
-            }
-        }.start();
+			}
+		});
+         
     }
 
     public void notifyContactsSyncListener(boolean success){

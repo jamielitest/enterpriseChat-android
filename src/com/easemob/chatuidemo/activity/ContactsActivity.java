@@ -16,7 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easemob.EMCallBack;
+import com.easemob.applib.controller.HXSDKHelper;
 import com.easemob.chatuidemo.DemoApplication;
+import com.easemob.chatuidemo.activity.ContactlistFragment.HXContactSyncListener;
 import com.easemob.chatuidemo.activity.contact.adapter.DepartmentAdapter;
 import com.easemob.chatuidemo.domain.Depart;
 import com.easemob.chatuidemo.domain.Sub_Depart;
@@ -38,7 +40,32 @@ public class ContactsActivity extends BaseActivity implements OnClickListener {
 	// private List<QXUser> deptUserlist;
 	private ImageButton btnBack;
 	private TextView txtTitle;
+	HXContactSyncListener contactSyncListener;
+	
+	class HXContactSyncListener implements HXSDKHelper.HXSyncListener{
 
+		@Override
+		public void onSyncSucess(boolean success) {
+			runOnUiThread(new Runnable() {
+				
+				@Override
+				public void run() {
+//					if(success){
+//						progressBar.setVisibility(View.GONE);
+//                        refresh();
+//					}else{
+//						 String s1 = getResources().getString(R.string.get_failed_please_check);
+//	                     Toast.makeText(this, s1, 1).show();
+//	                     progressBar.setVisibility(View.GONE);
+//					}
+					
+				}
+			});
+			
+		}
+		
+	}
+	
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -51,35 +78,44 @@ public class ContactsActivity extends BaseActivity implements OnClickListener {
 
 		deptListView = (ListView) findViewById(R.id.list);
 
-		DemoApplication.getInstance().getQXManager().saveUserAndDepart(new EMCallBack() {
-
-			@Override
-			public void onSuccess() {
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						Toast.makeText(ContactsActivity.this, "getUser Success:", Toast.LENGTH_SHORT).show();
-						refresh();
-					}
-				});
-			}
-
-			@Override
-			public void onProgress(int progress, String status) {
-			}
-
-			@Override
-			public void onError(int code, final String error) {
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						Toast.makeText(ContactsActivity.this, "getUser Fail:" + error, Toast.LENGTH_SHORT).show();
-					}
-				});
-			}
-		});
+		contactSyncListener = new HXContactSyncListener();
+		HXSDKHelper.getInstance().addSyncContactListener(contactSyncListener);
+//		if (!HXSDKHelper.getInstance().isContactsSyncedWithServer()) {
+//			progressBar.setVisibility(View.VISIBLE);
+//		} else {
+//			progressBar.setVisibility(View.GONE);
+//		}
+		
+		
+//		DemoApplication.getInstance().getQXManager().saveUserAndDepart(new EMCallBack() {
+//
+//			@Override
+//			public void onSuccess() {
+//				runOnUiThread(new Runnable() {
+//
+//					@Override
+//					public void run() {
+//						Toast.makeText(ContactsActivity.this, "getUser Success:", Toast.LENGTH_SHORT).show();
+//						refresh();
+//					}
+//				});
+//			}
+//
+//			@Override
+//			public void onProgress(int progress, String status) {
+//			}
+//
+//			@Override
+//			public void onError(int code, final String error) {
+//				runOnUiThread(new Runnable() {
+//
+//					@Override
+//					public void run() {
+//						Toast.makeText(ContactsActivity.this, "getUser Fail:" + error, Toast.LENGTH_SHORT).show();
+//					}
+//				});
+//			}
+//		});
 
 		adapter = new DepartmentAdapter(this, deptListView, "/", CommonUtils.getChildDepartments("/"),
 				CommonUtils.getUsersWithDepartment(DemoApplication.getInstance().getAllUsers(), "/"));
@@ -118,5 +154,32 @@ public class ContactsActivity extends BaseActivity implements OnClickListener {
 		}
 
 	}
+	
+	
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(contactSyncListener != null){
+			HXSDKHelper.getInstance().removeSyncContactListener(contactSyncListener);
+			contactSyncListener = null;
+		}
+	}
+	
+	
+//	public void showProgressBar(boolean show) {
+//		if (progressBar != null) {
+//			if (show) {
+//				progressBar.setVisibility(View.VISIBLE);
+//			} else {
+//				progressBar.setVisibility(View.GONE);
+//			}
+//		}
+//	}
+	
+	
+	
+	
+	
 
 }
