@@ -163,6 +163,49 @@ public class QiXinManager {
 		}
 		return qxUsers;
 	}
+	public QXUser loadSingleUser(String objectId){
+		QXUser user = new QXUser();
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		if(db.isOpen()){
+			Cursor cursor = null;
+			try {
+				cursor = db.rawQuery("select * from "
+						+ Contract.ContractUserTable.TABLE_NAME + " where " + Contract.ContractUserTable.COLUMN_NAME_HXID + " = ?" , new String[]{objectId});
+				if (cursor.moveToFirst()) {
+					user.setAvatorPath(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_AVATORPATH)));
+					user.setAvatorUrl(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_AVATORURL)));
+					user.setEmail(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_EMAIL)));
+					try {
+						user.setHeader(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_HEADER)));
+					} catch (Exception e) {
+						EMLog.e("###", e.getMessage());
+					}
+					user.setMobile(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_MOBILE)));
+					user.setNick(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_NICK)));
+					user.setOrganization(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_ORGANIZATION)));
+					user.setPermissions(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_PERMISSION)));
+					user.setSignature(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_SIGNATURE)));
+					user.setTelephone(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_TELEPHONE)));
+					user.setUserName(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_ID)));
+					JSONObject attrs = null;
+					try {
+						attrs = new JSONObject(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_ATTRIBUTES)));
+					} catch (Exception e) {
+					}
+					if(attrs!=null)
+						user.setPropertiesJson(attrs);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (cursor != null) {
+					cursor.close();
+					cursor = null;
+				}
+			}
+		}
+		return user;
+	}
 	
 	public void saveDepartmentData(){
 		String strData = "{\"data\":{\"sub_departs\":[{\"sub_departs\":[{\"sub_departs\":[],\"managers\":[],\"name\":\"\u73af\u4fe1\",\"users\":[{\"user_id\":\"54c34182ea0e821bc81a2f65\",\"name\":\"\u9ece\u5fd7\u5e73\",\"huanxin\":\"lzp:123456\"}]}],\"managers\":[],\"name\":\"\u5916\u90e8\",\"users\":[]},{\"sub_departs\":[{\"sub_departs\":[],\"managers\":[],\"name\":\"\u670d\u52a1\u5668\",\"users\":[{\"user_id\":\"54c33fccea0e821bc81a2f5e\",\"name\":\"\u5b8b\u9e4f\u98de\",\"huanxin\":\"spf:123456\"}]},{\"sub_departs\":[],\"managers\":[],\"name\":\"\u5b89\u5353\",\"users\":[{\"user_id\":\"54c340b2ea0e821bc81a2f60\",\"name\":\"\u9648\u632f\u5174\",\"huanxin\":\"czx:123456\"},{\"user_id\":\"54c3415bea0e821bc81a2f64\",\"name\":\"\u97e9\u5a01\",\"huanxin\":\"hw:123456\"}]},{\"sub_departs\":[],\"managers\":[],\"name\":\"ios\",\"users\":[{\"user_id\":\"54c34103ea0e821bc81a2f62\",\"name\":\"\u5f20\u632f\u680b\",\"huanxin\":\"zzd:123456\"},{\"user_id\":\"54c34081ea0e821bc81a2f5f\",\"name\":\"\u7f57\u884e\",\"huanxin\":\"lk:123456\"}]}],\"managers\":[],\"name\":\"\u8f6f\u4ef6\",\"users\":[]},{\"sub_departs\":[],\"managers\":[],\"name\":\"\u7ba1\u7406\u90e8\",\"users\":[{\"user_id\":\"54c341a0ea0e821bc81a2f66\",\"name\":\"\u9ad8\u9f50\",\"huanxin\":\"gq:123456\"},{\"user_id\":\"54c34132ea0e821bc81a2f63\",\"name\":\"\u9ad8\u7adf\u6ea2\",\"huanxin\":\"gjy:123456\"},{\"user_id\":\"54c341b6ea0e821bc81a2f67\",\"name\":\"\u4e01\u6c38\u5f3a\",\"huanxin\":\"dyq:123456\"}]},{\"sub_departs\":[],\"managers\":[],\"name\":\"\u8bbe\u8ba1\",\"users\":[{\"user_id\":\"54c340e4ea0e821bc81a2f61\",\"name\":\"\u738b\u535a\",\"huanxin\":\"wb:123456\"}]}],\"managers\":[],\"name\":\"\u6839\",\"users\":[]},\"error_description\":\"\",\"error\":0}";

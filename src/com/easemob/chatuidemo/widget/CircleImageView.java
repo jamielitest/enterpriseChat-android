@@ -47,7 +47,7 @@ public class CircleImageView extends ImageView{
     private float mBorderRadius;
 
     private boolean mReady;
-    private boolean mSetupPending;
+    private boolean mSetupPending  = false;
     
 	public CircleImageView(Context context) {
 		super(context);

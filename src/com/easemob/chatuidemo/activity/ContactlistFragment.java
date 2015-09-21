@@ -16,12 +16,9 @@ package com.easemob.chatuidemo.activity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +26,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -45,21 +43,17 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.easemob.applib.controller.HXSDKHelper;
-import com.easemob.applib.controller.HXSDKHelper.HXSyncListener;
-import com.easemob.chat.EMContactManager;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMConversation;
 import com.easemob.chatuidemo.Constant;
 import com.easemob.chatuidemo.DemoApplication;
 import com.easemob.chatuidemo.adapter.ContactAdapter;
-import com.easemob.chatuidemo.db.InviteMessgeDao;
-import com.easemob.chatuidemo.db.UserDao;
-import com.easemob.chatuidemo.domain.User;
+import com.easemob.chatuidemo.parse.QXUser;
 import com.easemob.chatuidemo.widget.Sidebar;
-import com.easemob.exceptions.EaseMobException;
 import com.easemob.qixin.R;
 import com.easemob.util.EMLog;
 
@@ -70,20 +64,17 @@ import com.easemob.util.EMLog;
 public class ContactlistFragment extends Fragment implements OnClickListener {
 	public static final String TAG = "ContactlistFragment";
 	private ContactAdapter adapter;
-	private List<User> contactList;
 	private ListView listView;
 	private boolean hidden;
 	private Sidebar sidebar;
 	private InputMethodManager inputMethodManager;
-	private List<String> blackList;
 	ImageButton clearSearch;
 	EditText query;
 	HXContactSyncListener contactSyncListener;
-	HXBlackListSyncListener blackListSyncListener;
 	View progressBar;
 	Handler handler = new Handler();
-    private User toBeProcessUser;
     private String toBeProcessUsername;
+    private QXUser toBeProcessUser;
 
 	class HXContactSyncListener implements HXSDKHelper.HXSyncListener {
 		@Override
@@ -111,23 +102,6 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 		}
 	}
 	
-	class HXBlackListSyncListener implements HXSyncListener{
-
-        @Override
-        public void onSyncSucess(boolean success) {
-            getActivity().runOnUiThread(new Runnable(){
-
-                @Override
-                public void run() {
-                    blackList = EMContactManager.getInstance().getBlackListUsernames();
-                    refresh();
-                }
-                
-            });
-        }
-	    
-	};
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_contact_list, container, false);
@@ -148,12 +122,6 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
         huanxinView.setOnClickListener(this);
         groupView.setOnClickListener(this);
         
-		//黑名单列表
-		blackList = EMContactManager.getInstance().getBlackListUsernames();
-		contactList = new ArrayList<User>();
-		// 获取设置contactlist
-		getContactList();
-		
 		//搜索框
 		query = (EditText) getView().findViewById(R.id.query);
 		query.setHint(R.string.search);
@@ -183,8 +151,10 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 			}
 		});
 		
+		
+		
 		// 设置adapter
-		adapter = new ContactAdapter(getActivity(), R.layout.row_contact, contactList);
+		adapter = new ContactAdapter(getActivity(), R.layout.row_contact, loadConversationsWithRecentChat());
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -210,24 +180,12 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 			}
 		});
 
-		ImageView addContactView = (ImageView) getView().findViewById(R.id.iv_new_contact);
-		// 进入添加好友页
-		addContactView.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(getActivity(), AddContactActivity.class));
-			}
-		});
 		registerForContextMenu(listView);
 		
 		progressBar = (View) getView().findViewById(R.id.progress_bar);
 
 		contactSyncListener = new HXContactSyncListener();
 		HXSDKHelper.getInstance().addSyncContactListener(contactSyncListener);
-		
-		blackListSyncListener = new HXBlackListSyncListener();
-		HXSDKHelper.getInstance().addSyncBlackListListener(blackListSyncListener);
 		
 		if (!HXSDKHelper.getInstance().isContactsSyncedWithServer()) {
 			progressBar.setVisibility(View.VISIBLE);
@@ -248,21 +206,6 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		if (item.getItemId() == R.id.delete_contact) {
-			try {
-                // 删除此联系人
-                deleteContact(toBeProcessUser);
-                // 删除相关的邀请消息
-                InviteMessgeDao dao = new InviteMessgeDao(getActivity());
-                dao.deleteMessage(toBeProcessUser.getUsername());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-			return true;
-		}else if(item.getItemId() == R.id.add_to_blacklist){
-			moveToBlacklist(toBeProcessUsername);
-			return true;
-		}
 		return super.onContextItemSelected(item);
 	}
 
@@ -283,93 +226,12 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 		}
 	}
 
-	/**
-	 * 删除联系人
-	 * 
-	 * @param toDeleteUser
-	 */
-	public void deleteContact(final User tobeDeleteUser) {
-		String st1 = getResources().getString(R.string.deleting);
-		final String st2 = getResources().getString(R.string.Delete_failed);
-		final ProgressDialog pd = new ProgressDialog(getActivity());
-		pd.setMessage(st1);
-		pd.setCanceledOnTouchOutside(false);
-		pd.show();
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					EMContactManager.getInstance().deleteContact(tobeDeleteUser.getUsername());
-					// 删除db和内存中此用户的数据
-					UserDao dao = new UserDao(getActivity());
-					dao.deleteContact(tobeDeleteUser.getUsername());
-					DemoApplication.getInstance().getContactList().remove(tobeDeleteUser.getUsername());
-					getActivity().runOnUiThread(new Runnable() {
-						public void run() {
-							pd.dismiss();
-							adapter.remove(tobeDeleteUser);
-							adapter.notifyDataSetChanged();
-
-						}
-					});
-				} catch (final Exception e) {
-					getActivity().runOnUiThread(new Runnable() {
-						public void run() {
-							pd.dismiss();
-							Toast.makeText(getActivity(), st2 + e.getMessage(), 1).show();
-						}
-					});
-
-				}
-
-			}
-		}).start();
-
-	}
-
-	/**
-	 * 把user移入到黑名单
-	 */
-	private void moveToBlacklist(final String username){
-		final ProgressDialog pd = new ProgressDialog(getActivity());
-		String st1 = getResources().getString(R.string.Is_moved_into_blacklist);
-		final String st2 = getResources().getString(R.string.Move_into_blacklist_success);
-		final String st3 = getResources().getString(R.string.Move_into_blacklist_failure);
-		pd.setMessage(st1);
-		pd.setCanceledOnTouchOutside(false);
-		pd.show();
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					//加入到黑名单
-					EMContactManager.getInstance().addUserToBlackList(username,false);
-					getActivity().runOnUiThread(new Runnable() {
-						public void run() {
-							pd.dismiss();
-							Toast.makeText(getActivity(), st2, 0).show();
-							refresh();
-						}
-					});
-				} catch (EaseMobException e) {
-					e.printStackTrace();
-					getActivity().runOnUiThread(new Runnable() {
-						public void run() {
-							pd.dismiss();
-							Toast.makeText(getActivity(), st3, 0).show();
-						}
-					});
-				}
-			}
-		}).start();
-		
-	}
-	
 	// 刷新ui
 	public void refresh() {
 		try {
 			// 可能会在子线程中调到这方法
 			getActivity().runOnUiThread(new Runnable() {
 				public void run() {
-					getContactList();
 					adapter.notifyDataSetChanged();
 				}
 			});
@@ -385,10 +247,6 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 			contactSyncListener = null;
 		}
 		
-		if(blackListSyncListener != null){
-		    HXSDKHelper.getInstance().removeSyncBlackListListener(blackListSyncListener);
-		}
-		
 		super.onDestroy();
 	}
 	
@@ -400,30 +258,6 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 				progressBar.setVisibility(View.GONE);
 			}
 		}
-	}
-
-	/**
-	 * 获取联系人列表，并过滤掉黑名单和排序
-	 */
-	private void getContactList() {
-		contactList.clear();
-		//获取本地好友列表
-		Map<String, User> users = DemoApplication.getInstance().getContactList();
-		Iterator<Entry<String, User>> iterator = users.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Entry<String, User> entry = iterator.next();
-			if (!blackList.contains(entry.getKey()))
-				contactList.add(entry.getValue());
-		}
-		// 排序
-		Collections.sort(contactList, new Comparator<User>() {
-
-			@Override
-			public int compare(User lhs, User rhs) {
-				return lhs.getUsername().compareTo(rhs.getUsername());
-			}
-		});
-
 	}
 	
 	void hideSoftKeyboard() {
@@ -457,5 +291,68 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 		default:
 			break;
 		}
+	}
+	
+	/**
+	 * 获取所有会话
+	 * 
+	 * @param context
+	 * @return
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        +	 */
+	private List<QXUser> loadConversationsWithRecentChat() {
+		
+		Hashtable<String, EMConversation> conversations = EMChatManager.getInstance().getAllConversations();
+		// 过滤掉messages size为0的conversation
+		/**
+		 * 如果在排序过程中有新消息收到，lastMsgTime会发生变化
+		 * 影响排序过程，Collection.sort会产生异常
+		 * 保证Conversation在Sort过程中最后一条消息的时间不变 
+		 * 避免并发问题
+		 */
+		List<Pair<Long, String>> sortList = new ArrayList<Pair<Long, String>>();
+		synchronized (conversations) {
+			for (EMConversation conversation : conversations.values()) {
+				if (conversation.getAllMessages().size() != 0) {
+					sortList.add(new Pair<Long, String>(conversation.getLastMessage().getMsgTime(), conversation.getUserName()));
+				}
+			}
+		}
+		try {
+			// Internal is TimSort algorithm, has bug
+			sortConversationByLastChatTime(sortList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		List<QXUser> list = new ArrayList<QXUser>();
+		for (Pair<Long, String> sortItem : sortList) {
+			for (QXUser user : DemoApplication.getInstance().getAllUsers()) {
+				if (user.getHXid().equals(sortItem.second)) {
+					list.add(user);
+				}
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * 根据最后一条消息的时间排序
+	 * 
+	 * @param usernames
+	 */
+	private void sortConversationByLastChatTime(List<Pair<Long, String>> conversationList) {
+		Collections.sort(conversationList, new Comparator<Pair<Long, String>>() {
+			@Override
+			public int compare(final Pair<Long, String> con1, final Pair<Long, String> con2) {
+
+				if (con1.first == con2.first) {
+					return 0;
+				} else if (con2.first > con1.first) {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+
+		});
 	}
 }

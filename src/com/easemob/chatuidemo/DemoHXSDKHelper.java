@@ -43,7 +43,6 @@ import com.easemob.chatuidemo.activity.ChatActivity;
 import com.easemob.chatuidemo.activity.MainActivity;
 import com.easemob.chatuidemo.activity.VideoCallActivity;
 import com.easemob.chatuidemo.activity.VoiceCallActivity;
-import com.easemob.chatuidemo.domain.User;
 import com.easemob.chatuidemo.parse.ParseManager;
 import com.easemob.chatuidemo.receiver.CallReceiver;
 import com.easemob.chatuidemo.utils.CommonUtils;
@@ -65,11 +64,6 @@ public class DemoHXSDKHelper extends HXSDKHelper{
      */
     protected EMEventListener eventListener = null;
 
-    /**
-     * contact list in cache
-     */
-    private Map<String, User> contactList;
-    
     private CallReceiver callReceiver;
     
     
@@ -196,61 +190,6 @@ public class DemoHXSDKHelper extends HXSDKHelper{
         
         EMChatManager.getInstance().registerEventListener(eventListener);
         
-        EMChatManager.getInstance().addChatRoomChangeListener(new EMChatRoomChangeListener(){
-            private final static String ROOM_CHANGE_BROADCAST = "easemob.demo.chatroom.changeevent.toast";
-            private final IntentFilter filter = new IntentFilter(ROOM_CHANGE_BROADCAST);
-            private boolean registered = false;
-            
-            private void showToast(String value){
-                if(!registered){
-                  //注册广播接收者
-                    appContext.registerReceiver(new BroadcastReceiver(){
-
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            Toast.makeText(appContext, intent.getStringExtra("value"), Toast.LENGTH_SHORT).show();
-                        }
-                        
-                    }, filter);
-                    
-                    registered = true;
-                }
-                
-                Intent broadcastIntent = new Intent(ROOM_CHANGE_BROADCAST);
-                broadcastIntent.putExtra("value", value);
-                appContext.sendBroadcast(broadcastIntent, null);
-            }
-            
-            @Override
-            public void onChatRoomDestroyed(String roomId, String roomName) {
-                showToast(" room : " + roomId + " with room name : " + roomName + " was destroyed");
-                Log.i("info","onChatRoomDestroyed="+roomName);
-            }
-
-            @Override
-            public void onMemberJoined(String roomId, String participant) {
-                showToast("member : " + participant + " join the room : " + roomId);
-                Log.i("info", "onmemberjoined="+participant);
-                
-            }
-
-            @Override
-            public void onMemberExited(String roomId, String roomName,
-                    String participant) {
-                showToast("member : " + participant + " leave the room : " + roomId + " room name : " + roomName);
-                Log.i("info", "onMemberExited="+participant);
-                
-            }
-
-            @Override
-            public void onMemberKicked(String roomId, String roomName,
-                    String participant) {
-                showToast("member : " + participant + " was kicked from the room : " + roomId + " room name : " + roomName);
-                Log.i("info", "onMemberKicked="+participant);
-                
-            }
-
-        });
     }
 
     /**
@@ -386,28 +325,6 @@ public class DemoHXSDKHelper extends HXSDKHelper{
         return (DemoHXSDKModel) hxModel;
     }
     
-    /**
-     * 获取内存中好友user list
-     *
-     * @return
-     */
-    public Map<String, User> getContactList() {
-        if (getHXId() != null && contactList == null) {
-            contactList = ((DemoHXSDKModel) getModel()).getContactList();
-        }
-        
-        return contactList;
-    }
-    
-    /**
-     * 设置好友user list到内存中
-     *
-     * @param contactList
-     */
-    public void setContactList(Map<String, User> contactList) {
-        this.contactList = contactList;
-    }
-    
     @Override
     public void logout(final EMCallBack callback){
         endCall();
@@ -415,8 +332,6 @@ public class DemoHXSDKHelper extends HXSDKHelper{
 
             @Override
             public void onSuccess() {
-                // TODO Auto-generated method stub
-                setContactList(null);
                 getModel().closeDB();
                 ParseManager.getInstance().logout();
                 if(callback != null){

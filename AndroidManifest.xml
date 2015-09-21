@@ -284,6 +284,12 @@
 		    android:theme="@style/horizontal_slide"
 		    android:windowSoftInputMode="adjustPan"
 		    ></activity>
+		<activity 
+		    android:name="com.easemob.chatuidemo.activity.PersonalInfoActivity"
+		    android:screenOrientation="portrait"
+		    android:theme="@style/horizontal_slide"
+		    android:windowSoftInputMode="adjustPan"
+		    ></activity>
 
         <!-- 设置环信应用的appkey -->
         <meta-data

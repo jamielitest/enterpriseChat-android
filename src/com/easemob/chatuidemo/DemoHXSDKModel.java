@@ -13,15 +13,10 @@
  */
 package com.easemob.chatuidemo;
 
-import java.util.List;
-import java.util.Map;
-
 import android.content.Context;
 
 import com.easemob.applib.model.DefaultHXSDKModel;
 import com.easemob.chatuidemo.db.DemoDBManager;
-import com.easemob.chatuidemo.db.UserDao;
-import com.easemob.chatuidemo.domain.User;
 
 public class DemoHXSDKModel extends DefaultHXSDKModel{
 
@@ -29,25 +24,9 @@ public class DemoHXSDKModel extends DefaultHXSDKModel{
         super(ctx);
     }
 
-    // demo will not use HuanXin roster
-    public boolean getUseHXRoster() {
-        return false;
-    }
-    
     // demo will switch on debug mode
     public boolean isDebugMode(){
         return true;
-    }
-    
-    public boolean saveContactList(List<User> contactList) {
-        UserDao dao = new UserDao(context);
-        dao.saveContactList(contactList);
-        return true;
-    }
-
-    public Map<String, User> getContactList() {
-        UserDao dao = new UserDao(context);
-        return dao.getContactList();
     }
     
     public void closeDB() {

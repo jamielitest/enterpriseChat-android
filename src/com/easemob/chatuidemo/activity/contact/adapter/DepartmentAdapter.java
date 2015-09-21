@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.easemob.chatuidemo.DemoApplication;
 import com.easemob.chatuidemo.activity.ChatActivity;
+import com.easemob.chatuidemo.activity.PersonalInfoActivity;
 import com.easemob.chatuidemo.parse.QXUser;
 import com.easemob.chatuidemo.utils.CommonUtils;
 import com.easemob.qixin.R;
@@ -243,10 +244,7 @@ public class DepartmentAdapter extends BaseAdapter{
 						
 						@Override
 						public void onClick(View v) {
-//							mContext.startActivity(new Intent(mContext,ChatActivity.class).putExtra("userId", user.getObjectId()));
-//							Toast.makeText(mContext, "objid:"+user.getObjectId(), Toast.LENGTH_SHORT).show();
-							Toast.makeText(mContext, "objid:"+user.getHXid(), Toast.LENGTH_SHORT).show();
-							
+							mContext.startActivity(new Intent(mContext,PersonalInfoActivity.class).putExtra("userId", user.getObjectId()));
 						}
 					});
 			        

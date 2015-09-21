@@ -62,10 +62,9 @@ import com.easemob.chatuidemo.DemoHXSDKHelper;
 import com.easemob.chatuidemo.activity.contact.ContactFragment;
 import com.easemob.chatuidemo.activity.enterprise.EnterpriseFragment;
 import com.easemob.chatuidemo.db.InviteMessgeDao;
-import com.easemob.chatuidemo.db.UserDao;
 import com.easemob.chatuidemo.domain.InviteMessage;
 import com.easemob.chatuidemo.domain.InviteMessage.InviteMesageStatus;
-import com.easemob.chatuidemo.domain.User;
+import com.easemob.chatuidemo.parse.QXUser;
 import com.easemob.chatuidemo.utils.CommonUtils;
 import com.easemob.qixin.R;
 import com.easemob.util.EMLog;
@@ -141,7 +140,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		}
 
 		inviteMessgeDao = new InviteMessgeDao(this);
-		userDao = new UserDao(this);
 		// 这个fragment只显示好友和群组的聊天记录
 		// chatHistoryFragment = new ChatHistoryFragment();
 		// 显示所有人消息记录的fragment
@@ -157,11 +155,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 				.commit();
 		
 		init();
+		
 	}
-
 	private void init() {     
-		// setContactListener监听联系人的变化等
-		EMContactManager.getInstance().setContactListener(new MyContactListener());
 		// 注册一个监听连接状态的listener
 		
 		connectionListener = new MyConnectionListener();
@@ -228,22 +224,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		});
 	}
 	
-	static void asyncFetchBlackListFromServer(){
-	    HXSDKHelper.getInstance().asyncFetchBlackListFromServer(new EMValueCallBack<List<String>>(){
-
-            @Override
-            public void onSuccess(List<String> value) {
-                EMContactManager.getInstance().saveBlackList(value);
-                HXSDKHelper.getInstance().notifyBlackListSyncListener(true);
-            }
-
-            @Override
-            public void onError(int error, String errorMsg) {
-                HXSDKHelper.getInstance().notifyBlackListSyncListener(false);
-            }
-	        
-	    });
-	}
 	
 	/**
      * 设置hearder属性，方便通讯中对联系人按header分类显示，以及通过右侧ABCD...字母栏快速定位联系人
@@ -251,7 +231,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
      * @param username
      * @param user
      */
-    private static void setUserHearder(String username, User user) {
+    private static void setUserHearder(String username, QXUser user) {
         String headerName = null;
         if (!TextUtils.isEmpty(user.getNick())) {
             headerName = user.getNick();
@@ -458,111 +438,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	}
 
 	private InviteMessgeDao inviteMessgeDao;
-	private UserDao userDao;
-
-	/***
-	 * 好友变化listener
-	 * 
-	 */
-	public class MyContactListener implements EMContactListener {
-
-		@Override
-		public void onContactAdded(List<String> usernameList) {			
-			// 保存增加的联系人
-			Map<String, User> localUsers = DemoApplication.getInstance().getContactList();
-			Map<String, User> toAddUsers = new HashMap<String, User>();
-			for (String username : usernameList) {
-				User user = setUserHead(username);
-				// 添加好友时可能会回调added方法两次
-				if (!localUsers.containsKey(username)) {
-					userDao.saveContact(user);
-				}
-				toAddUsers.put(username, user);
-			}
-			localUsers.putAll(toAddUsers);
-			// 刷新ui
-//			if (currentTabIndex == 1)
-//				contactListFragment.refresh();
-
-		}
-
-		@Override
-		public void onContactDeleted(final List<String> usernameList) {
-			// 被删除
-			Map<String, User> localUsers = DemoApplication.getInstance().getContactList();
-			for (String username : usernameList) {
-				localUsers.remove(username);
-				userDao.deleteContact(username);
-				inviteMessgeDao.deleteMessage(username);
-			}
-			runOnUiThread(new Runnable() {
-				public void run() {
-					// 如果正在与此用户的聊天页面
-					String st10 = getResources().getString(R.string.have_you_removed);
-					if (ChatActivity.activityInstance != null
-							&& usernameList.contains(ChatActivity.activityInstance.getToChatUsername())) {
-						Toast.makeText(MainActivity.this, ChatActivity.activityInstance.getToChatUsername() + st10, 1)
-								.show();
-						ChatActivity.activityInstance.finish();
-					}
-					updateUnreadLabel();
-					// 刷新ui
-//					contactListFragment.refresh();
-					chatHistoryFragment.refresh();
-				}
-			});
-
-		}
-
-		@Override
-		public void onContactInvited(String username, String reason) {
-			
-			// 接到邀请的消息，如果不处理(同意或拒绝)，掉线后，服务器会自动再发过来，所以客户端不需要重复提醒
-			List<InviteMessage> msgs = inviteMessgeDao.getMessagesList();
-
-			for (InviteMessage inviteMessage : msgs) {
-				if (inviteMessage.getGroupId() == null && inviteMessage.getFrom().equals(username)) {
-					inviteMessgeDao.deleteMessage(username);
-				}
-			}
-			// 自己封装的javabean
-			InviteMessage msg = new InviteMessage();
-			msg.setFrom(username);
-			msg.setTime(System.currentTimeMillis());
-			msg.setReason(reason);
-			Log.d(TAG, username + "请求加你为好友,reason: " + reason);
-			// 设置相应status
-			msg.setStatus(InviteMesageStatus.BEINVITEED);
-			notifyNewIviteMessage(msg);
-
-		}
-
-		@Override
-		public void onContactAgreed(String username) {
-			List<InviteMessage> msgs = inviteMessgeDao.getMessagesList();
-			for (InviteMessage inviteMessage : msgs) {
-				if (inviteMessage.getFrom().equals(username)) {
-					return;
-				}
-			}
-			// 自己封装的javabean
-			InviteMessage msg = new InviteMessage();
-			msg.setFrom(username);
-			msg.setTime(System.currentTimeMillis());
-			Log.d(TAG, username + "同意了你的好友请求");
-			msg.setStatus(InviteMesageStatus.BEAGREED);
-			notifyNewIviteMessage(msg);
-
-		}
-
-		@Override
-		public void onContactRefused(String username) {
-			
-			// 参考同意，被邀请实现此功能,demo未实现
-			Log.d(username, username + "拒绝了你的好友请求");
-		}
-
-	}
 
 	/**
 	 * 连接监听listener
@@ -592,9 +467,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
                     asyncFetchContactsFromServer();
                 }
                 
-                if(!HXSDKHelper.getInstance().isBlackListSyncedWithServer()){
-                    asyncFetchBlackListFromServer();
-                }
             }
             
 			runOnUiThread(new Runnable() {
@@ -817,8 +689,8 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	 * @param username
 	 * @return
 	 */
-	User setUserHead(String username) {
-		User user = new User();
+	QXUser setUserHead(String username) {
+		QXUser user = new QXUser();
 		user.setUsername(username);
 		String headerName = null;
 		if (!TextUtils.isEmpty(user.getNick())) {

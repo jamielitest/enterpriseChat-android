@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
+import com.easemob.chatuidemo.DemoApplication;
 import com.easemob.chatuidemo.DemoHXSDKHelper;
 import com.easemob.qixin.R;
 
@@ -51,6 +52,8 @@ public class SplashActivity extends BaseActivity {
 					long start = System.currentTimeMillis();
 					EMGroupManager.getInstance().loadAllGroups();
 					EMChatManager.getInstance().loadAllConversations();
+					DemoApplication.getInstance().getAllUsers();
+					
 					long costTime = System.currentTimeMillis() - start;
 					//等待sleeptime时长
 					if (sleepTime - costTime > 0) {
@@ -90,5 +93,15 @@ public class SplashActivity extends BaseActivity {
 			e.printStackTrace();
 			return st;
 		}
+	}
+	
+	private void loadAllusers(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+								
+			}
+		}).start();
 	}
 }

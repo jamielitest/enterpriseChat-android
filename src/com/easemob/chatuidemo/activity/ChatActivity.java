@@ -187,6 +187,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private boolean haveMoreData = true;
 	private Button btnMore;
 	public String playMsgId;
+	private String nick;
 
 	private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -198,7 +199,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		}
 	};
 	public EMGroup group;
-	public EMChatRoom room;
 	public boolean isRobot;
 	
 	@Override
@@ -375,10 +375,16 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 				PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
 		// 判断单聊还是群聊
 		chatType = getIntent().getIntExtra("chatType", CHATTYPE_SINGLE);
+		
+		nick = getIntent().getStringExtra("nick");
 
 		if (chatType == CHATTYPE_SINGLE) { // 单聊
 			toChatUsername = getIntent().getStringExtra("userId");
-			((TextView) findViewById(R.id.name)).setText(toChatUsername);
+			if (nick == null) {
+				((TextView) findViewById(R.id.name)).setText(toChatUsername);
+			}else {
+				((TextView) findViewById(R.id.name)).setText(nick);
+			}
 		} else {
 			// 群聊
 			findViewById(R.id.container_to_group).setVisibility(View.VISIBLE);
@@ -511,44 +517,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	protected void onChatRoomViewCreation(){
         findViewById(R.id.container_to_group).setVisibility(View.GONE);
         
-        final ProgressDialog pd = ProgressDialog.show(this, "", "Joining......");
-        EMChatManager.getInstance().joinChatRoom(toChatUsername, new EMValueCallBack<EMChatRoom>() {
-        
-        @Override
-        public void onSuccess(EMChatRoom value) {
-            // TODO Auto-generated method stub
-             runOnUiThread(new Runnable(){
-                   @Override
-                   public void run(){
-                        pd.dismiss();
-                        room = EMChatManager.getInstance().getChatRoom(toChatUsername);
-                        if(room !=null){
-                            ((TextView) findViewById(R.id.name)).setText(room.getName());
-                        }else{
-                            ((TextView) findViewById(R.id.name)).setText(toChatUsername);
-                        }
-                        EMLog.d(TAG, "join room success : " + room.getName());
-                        
-                        onConversationInit();
-                        
-                        onListViewCreation();
-                   }
-               });
-        }
-        
-        @Override
-        public void onError(final int error, String errorMsg) {
-                // TODO Auto-generated method stub
-                EMLog.d(TAG, "join room failure : " + error);
-               runOnUiThread(new Runnable(){
-                   @Override
-                   public void run(){
-                       pd.dismiss();
-                   }
-               });
-               finish();
-            }
-        });
 	}
 	
 	/**
@@ -1227,15 +1195,12 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * @param view
 	 */
 	public void toGroupDetails(View view) {
-		if (room == null && group == null) {
+		if (group == null) {
 			Toast.makeText(getApplicationContext(), R.string.gorup_not_found, 0).show();
 			return;
 		}
 		if(chatType == CHATTYPE_GROUP){
 			startActivityForResult((new Intent(this, GroupDetailsActivity.class).putExtra("groupId", toChatUsername)),
-					REQUEST_CODE_GROUP_DETAIL);
-		}else{
-			startActivityForResult((new Intent(this, ChatRoomDetailsActivity.class).putExtra("roomId", toChatUsername)),
 					REQUEST_CODE_GROUP_DETAIL);
 		}
 	}

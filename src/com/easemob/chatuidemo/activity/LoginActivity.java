@@ -13,11 +13,6 @@
  */
 package com.easemob.chatuidemo.activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -35,11 +30,8 @@ import com.easemob.EMCallBack;
 import com.easemob.EMValueCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
-import com.easemob.chatuidemo.Constant;
 import com.easemob.chatuidemo.DemoApplication;
 import com.easemob.chatuidemo.DemoHXSDKHelper;
-import com.easemob.chatuidemo.db.UserDao;
-import com.easemob.chatuidemo.domain.User;
 import com.easemob.chatuidemo.manager.QiXinManager;
 import com.easemob.chatuidemo.parse.ParseManager;
 import com.easemob.chatuidemo.parse.QXUser;
@@ -152,9 +144,9 @@ public class LoginActivity extends BaseActivity {
 						// 登陆成功，保存用户名密码
 						DemoApplication.getInstance().setUserName(currentUsername);
 						DemoApplication.getInstance().setPassword(currentPassword);
-						UserDao dao = new UserDao(getBaseContext());
 						QiXinManager manager = new QiXinManager(LoginActivity.this);
 						manager.saveQXUser(qxUser);
+						DemoApplication.getInstance().getAllUsers();
 						try {
 							// ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
 							// ** manually load all local groups and

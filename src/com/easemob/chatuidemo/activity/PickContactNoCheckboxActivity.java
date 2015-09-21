@@ -31,7 +31,7 @@ import android.widget.ListView;
 import com.easemob.chatuidemo.Constant;
 import com.easemob.chatuidemo.DemoApplication;
 import com.easemob.chatuidemo.adapter.ContactAdapter;
-import com.easemob.chatuidemo.domain.User;
+import com.easemob.chatuidemo.parse.QXUser;
 import com.easemob.chatuidemo.widget.Sidebar;
 import com.easemob.qixin.R;
 
@@ -40,7 +40,7 @@ public class PickContactNoCheckboxActivity extends BaseActivity {
 	private ListView listView;
 	private Sidebar sidebar;
 	protected ContactAdapter contactAdapter;
-	private List<User> contactList;
+	private List<QXUser> contactList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class PickContactNoCheckboxActivity extends BaseActivity {
 		listView = (ListView) findViewById(R.id.list);
 		sidebar = (Sidebar) findViewById(R.id.sidebar);
 		sidebar.setListView(listView);
-		contactList = new ArrayList<User>();
+		contactList = new ArrayList<QXUser>();
 		// 获取设置contactlist
 		getContactList();
 		// 设置adapter
@@ -79,17 +79,12 @@ public class PickContactNoCheckboxActivity extends BaseActivity {
 
 	private void getContactList() {
 		contactList.clear();
-		Map<String, User> users = DemoApplication.getInstance().getContactList();
-		Iterator<Entry<String, User>> iterator = users.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Entry<String, User> entry = iterator.next();
-			contactList.add(entry.getValue());
-		}
+		List<QXUser> users = DemoApplication.getInstance().getAllUsers();
 		// 排序
-		Collections.sort(contactList, new Comparator<User>() {
+		Collections.sort(users, new Comparator<QXUser>() {
 
 			@Override
-			public int compare(User lhs, User rhs) {
+			public int compare(QXUser lhs, QXUser rhs) {
 				return lhs.getUsername().compareTo(rhs.getUsername());
 			}
 		});

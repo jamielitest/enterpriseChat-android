@@ -25,12 +25,6 @@ public class DbOpenHelper extends SQLiteOpenHelper{
 	private static final int DATABASE_VERSION = 5;
 	private static DbOpenHelper instance;
 
-	private static final String USERNAME_TABLE_CREATE = "CREATE TABLE "
-			+ UserDao.TABLE_NAME + " ("
-			+ UserDao.COLUMN_NAME_NICK + " TEXT, "
-			+ UserDao.COLUMN_NAME_AVATAR + " TEXT, "
-			+ UserDao.COLUMN_NAME_ID + " TEXT PRIMARY KEY);";
-	
 	private static final String INIVTE_MESSAGE_TABLE_CREATE = "CREATE TABLE "
 			+ InviteMessgeDao.TABLE_NAME + " ("
 			+ InviteMessgeDao.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -65,10 +59,6 @@ public class DbOpenHelper extends SQLiteOpenHelper{
 	        + Contract.ContractUserTable.COLUMN_NAME_HEADER + " TEXT, "
 	        + Contract.ContractUserTable.COLUMN_NAME_ATTRIBUTES + " TEXT);";
 	
-	private static final String CREATE_PREF_TABLE = "CREATE TABLE "
-            + UserDao.PREF_TABLE_NAME + " ("
-            + UserDao.COLUMN_NAME_DISABLED_GROUPS + " TEXT, "
-            + UserDao.COLUMN_NAME_DISABLED_IDS + " TEXT);";
 	
 	private DbOpenHelper(Context context) {
 		super(context, getUserDatabaseName(), null, DATABASE_VERSION);
@@ -92,18 +82,14 @@ public class DbOpenHelper extends SQLiteOpenHelper{
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		 	db.execSQL("drop table "+UserDao.TABLE_NAME);
 		    db.execSQL("drop table "+InviteMessgeDao.TABLE_NAME);
-		    db.execSQL("drop table "+UserDao.PREF_TABLE_NAME);
 		    db.execSQL("drop table "+Contract.DepartTable.TABLE_NAME);
 		    db.execSQL("drop table "+Contract.ContractUserTable.TABLE_NAME);
 		    onCreateDB(db);
 	}
 	
 	private void onCreateDB(SQLiteDatabase db){
-		db.execSQL(USERNAME_TABLE_CREATE);
 		db.execSQL(INIVTE_MESSAGE_TABLE_CREATE);
-		db.execSQL(CREATE_PREF_TABLE);
         db.execSQL(DEPART_TABLE_CREATE);
         db.execSQL(CONTRACTUSER_TABLE_CREATE);
 	}

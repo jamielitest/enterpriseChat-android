@@ -19,6 +19,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,9 +40,10 @@ import com.easemob.chat.EMMessage;
 import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.chatuidemo.Constant;
+import com.easemob.chatuidemo.DemoApplication;
+import com.easemob.chatuidemo.parse.QXUser;
 import com.easemob.chatuidemo.utils.DateUtils;
 import com.easemob.chatuidemo.utils.SmileUtils;
-import com.easemob.chatuidemo.utils.UserUtils;
 import com.easemob.qixin.R;
 import com.easemob.util.EMLog;
 
@@ -92,7 +94,16 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 		// 获取与此用户/群组的会话
 		EMConversation conversation = getItem(position);
 		// 获取用户username或者群组groupid
-		String username = conversation.getUserName();
+		String username = null;
+		for (QXUser user : DemoApplication.getInstance().getAllUsers()) {
+			if (user.getHXid().equals(conversation.getUserName())) {
+				if (user.getNick() != null) {
+					username = user.getNick();
+				}else {
+					username = user.getUsername();
+				}
+			}
+		}
 		if (conversation.getType() == EMConversationType.GroupChat) {
 			// 群聊消息，显示群聊头像
 			holder.avatar.setImageResource(R.drawable.group_icon);
@@ -103,7 +114,6 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
             EMChatRoom room = EMChatManager.getInstance().getChatRoom(username);
             holder.name.setText(room != null && !TextUtils.isEmpty(room.getName()) ? room.getName() : username);
 		}else {
-		    UserUtils.setUserAvatar(getContext(), username, holder.avatar);
 			holder.name.setText(username);
 		}
 

@@ -35,7 +35,7 @@ import com.easemob.chat.EMGroupManager;
 import com.easemob.chatuidemo.Constant;
 import com.easemob.chatuidemo.DemoApplication;
 import com.easemob.chatuidemo.adapter.ContactAdapter;
-import com.easemob.chatuidemo.domain.User;
+import com.easemob.chatuidemo.parse.QXUser;
 import com.easemob.chatuidemo.widget.Sidebar;
 import com.easemob.qixin.R;
 
@@ -66,14 +66,14 @@ public class GroupPickContactsActivity extends BaseActivity {
 		if(exitingMembers == null)
 			exitingMembers = new ArrayList<String>();
 		// 获取好友列表
-		final List<User> alluserList = new ArrayList<User>();
-		for (User user : DemoApplication.getInstance().getContactList().values()) {
+		final List<QXUser> alluserList = new ArrayList<QXUser>();
+		for (QXUser user : DemoApplication.getInstance().getAllUsers()) {
 			alluserList.add(user);
 		}
 		// 对list进行排序
-		Collections.sort(alluserList, new Comparator<User>() {
+		Collections.sort(alluserList, new Comparator<QXUser>() {
 			@Override
-			public int compare(User lhs, User rhs) {
+			public int compare(QXUser lhs, QXUser rhs) {
 				return (lhs.getUsername().compareTo(rhs.getUsername()));
 
 			}
@@ -129,7 +129,7 @@ public class GroupPickContactsActivity extends BaseActivity {
 
 		private boolean[] isCheckedArray;
 
-		public PickContactAdapter(Context context, int resource, List<User> users) {
+		public PickContactAdapter(Context context, int resource, List<QXUser> users) {
 			super(context, resource, users);
 			isCheckedArray = new boolean[users.size()];
 		}

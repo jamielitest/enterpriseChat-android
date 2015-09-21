@@ -113,23 +113,14 @@ public abstract class HXSDKHelper {
 	 */
 	private List<HXSyncListener> syncContactsListeners;
 
-	/**
-	 * HuanXin sync blacklist status listener
-	 */
-	private List<HXSyncListener> syncBlackListListeners;
-
 	private boolean isSyncingGroupsWithServer = false;
 
 	private boolean isSyncingContactsWithServer = false;
 
-	private boolean isSyncingBlackListWithServer = false;
-	
 	private boolean isGroupsSyncedWithServer = false;
 
 	private boolean isContactsSyncedWithServer = false;
 
-	private boolean isBlackListSyncedWithServer = false;
-	
 	private boolean alreadyNotified = false;
 	
 	public boolean isVoiceCalling;
@@ -207,11 +198,9 @@ public abstract class HXSDKHelper {
         
         syncGroupsListeners = new ArrayList<HXSyncListener>();
         syncContactsListeners = new ArrayList<HXSyncListener>();
-        syncBlackListListeners = new ArrayList<HXSyncListener>();
         
         isGroupsSyncedWithServer = hxModel.isGroupsSynced();
         isContactsSyncedWithServer = hxModel.isContactSynced();
-        isBlackListSyncedWithServer = hxModel.isBacklistSynced();
         
         sdkInited = true;
         return true;
@@ -465,24 +454,6 @@ public abstract class HXSDKHelper {
 	    }
     }
 
-    public void addSyncBlackListListener(HXSyncListener listener) {
-	    if (listener == null) {
-		    return;
-	    }
-	    if (!syncBlackListListeners.contains(listener)) {
-		    syncBlackListListeners.add(listener);
-	    }
-    }
-
-    public void removeSyncBlackListListener(HXSyncListener listener) {
-	    if (listener == null) {
-		    return;
-	    }
-	    if (syncBlackListListeners.contains(listener)) {
-		    syncBlackListListeners.remove(listener);
-	    }
-    }
-   
     /**
      * 同步操作，从服务器获取群组列表
      * 该方法会记录更新状态，可以通过isSyncingGroupsFromServer获取是否正在更新
@@ -577,55 +548,6 @@ public abstract class HXSDKHelper {
         }
     }
     
-    public void asyncFetchBlackListFromServer(final EMValueCallBack<List<String>> callback){
-        
-        if(isSyncingBlackListWithServer){
-            return;
-        }
-        
-        isSyncingBlackListWithServer = true;
-        
-        new Thread(){
-            @Override
-            public void run(){
-                try {
-                    List<String> usernames = null;
-                    usernames = EMContactManager.getInstance().getBlackListUsernamesFromServer();
-                    
-                    // in case that logout already before server returns, we should return immediately
-                    if(!EMChat.getInstance().isLoggedIn()){
-                        return;
-                    }
-                    
-                    hxModel.setBlacklistSynced(true);
-                    
-                    isBlackListSyncedWithServer = true;
-                    isSyncingBlackListWithServer = false;
-                    if(callback != null){
-                        callback.onSuccess(usernames);
-                    }
-                } catch (EaseMobException e) {
-                    hxModel.setBlacklistSynced(false);
-                    
-                    isBlackListSyncedWithServer = false;
-                    isSyncingBlackListWithServer = true;
-                    e.printStackTrace();
-                    
-                    if(callback != null){
-                        callback.onError(e.getErrorCode(), e.toString());
-                    }
-                }
-                
-            }
-        }.start();
-    }
-
-    public void notifyBlackListSyncListener(boolean success){
-        for (HXSyncListener listener : syncBlackListListeners) {
-            listener.onSyncSucess(success);
-        }
-    }
-    
     public boolean isSyncingGroupsWithServer() {
 	    return isSyncingGroupsWithServer;
     }
@@ -634,10 +556,6 @@ public abstract class HXSDKHelper {
 	    return isSyncingContactsWithServer;
     }
 
-    public boolean isSyncingBlackListWithServer() {
-	    return isSyncingBlackListWithServer;
-    }
-    
     public boolean isGroupsSyncedWithServer() {
 	    return isGroupsSyncedWithServer;
     }
@@ -646,10 +564,6 @@ public abstract class HXSDKHelper {
 	    return isContactsSyncedWithServer;
     }
 
-    public boolean isBlackListSyncedWithServer() {
-	    return isBlackListSyncedWithServer;
-    }
-    
     public synchronized void notifyForRecevingEvents(){
         if(alreadyNotified){
             return;
@@ -663,15 +577,12 @@ public abstract class HXSDKHelper {
     synchronized void reset(){
         isSyncingGroupsWithServer = false;
         isSyncingContactsWithServer = false;
-        isSyncingBlackListWithServer = false;
         
         hxModel.setGroupsSynced(false);
         hxModel.setContactSynced(false);
-        hxModel.setBlacklistSynced(false);
         
         isGroupsSyncedWithServer = false;
         isContactsSyncedWithServer = false;
-        isBlackListSyncedWithServer = false;
         
         alreadyNotified = false;
     }

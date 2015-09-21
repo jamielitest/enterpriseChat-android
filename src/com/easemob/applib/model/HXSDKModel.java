@@ -118,11 +118,4 @@ public abstract class HXSDKModel {
     public boolean isContactSynced(){
         return false;
     }
-    
-    public void setBlacklistSynced(boolean synced){
-    }
-    
-    public boolean isBacklistSynced(){
-        return false;
-    }
 }

@@ -16,11 +16,11 @@ package com.easemob.chatuidemo.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.easemob.chatuidemo.domain.User;
+import com.easemob.chatuidemo.parse.QXUser;
 import com.easemob.qixin.R;
 
 public class ForwardMessageActivity extends PickContactNoCheckboxActivity {
-	private User selectUser;
+	private QXUser selectUser;
 	private String forward_msg_id;
 
 	 
