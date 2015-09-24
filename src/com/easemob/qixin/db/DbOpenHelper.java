@@ -18,24 +18,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.easemob.applib.controller.HXSDKHelper;
-import com.easemob.qixin.DemoApplication;
 
 public class DbOpenHelper extends SQLiteOpenHelper{
 
 	private static final int DATABASE_VERSION = 5;
 	private static DbOpenHelper instance;
 
-	private static final String INIVTE_MESSAGE_TABLE_CREATE = "CREATE TABLE "
-			+ InviteMessgeDao.TABLE_NAME + " ("
-			+ InviteMessgeDao.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-			+ InviteMessgeDao.COLUMN_NAME_FROM + " TEXT, "
-			+ InviteMessgeDao.COLUMN_NAME_GROUP_ID + " TEXT, "
-			+ InviteMessgeDao.COLUMN_NAME_GROUP_Name + " TEXT, "
-			+ InviteMessgeDao.COLUMN_NAME_REASON + " TEXT, "
-			+ InviteMessgeDao.COLUMN_NAME_STATUS + " INTEGER, "
-			+ InviteMessgeDao.COLUMN_NAME_ISINVITEFROMME + " INTEGER, "
-			+ InviteMessgeDao.COLUMN_NAME_TIME + " TEXT); ";
-	
 	private static final String DEPART_TABLE_CREATE = "CREATE TABLE "
             + Contract.DepartTable.TABLE_NAME + " ("
             + Contract.DepartTable.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -81,14 +69,12 @@ public class DbOpenHelper extends SQLiteOpenHelper{
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		    db.execSQL("drop table "+InviteMessgeDao.TABLE_NAME);
 		    db.execSQL("drop table "+Contract.DepartTable.TABLE_NAME);
 		    db.execSQL("drop table "+Contract.ContractUserTable.TABLE_NAME);
 		    onCreateDB(db);
 	}
 	
 	private void onCreateDB(SQLiteDatabase db){
-		db.execSQL(INIVTE_MESSAGE_TABLE_CREATE);
         db.execSQL(DEPART_TABLE_CREATE);
         db.execSQL(CONTRACTUSER_TABLE_CREATE);
 	}

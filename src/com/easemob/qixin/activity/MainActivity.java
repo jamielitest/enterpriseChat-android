@@ -51,9 +51,6 @@ import com.easemob.qixin.DemoApplication;
 import com.easemob.qixin.DemoHXSDKHelper;
 import com.easemob.qixin.R;
 import com.easemob.qixin.activity.enterprise.EnterpriseFragment;
-import com.easemob.qixin.db.InviteMessgeDao;
-import com.easemob.qixin.domain.InviteMessage;
-import com.easemob.qixin.domain.InviteMessage.InviteMesageStatus;
 import com.easemob.qixin.parse.QXUser;
 import com.easemob.qixin.utils.CommonUtils;
 import com.easemob.util.EMLog;
@@ -126,7 +123,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 			showAccountRemovedDialog();
 		}
 
-		inviteMessgeDao = new InviteMessgeDao(this);
 		// 显示所有人消息记录的fragment
 		chatHistoryFragment = new ChatAllHistoryFragment();
 		contactListFragment = new ContactlistFragment();
@@ -419,8 +415,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		return unreadMsgCountTotal-chatroomUnreadMsgCount;
 	}
 
-	private InviteMessgeDao inviteMessgeDao;
-
 	/**
 	 * 连接监听listener
 	 * 
@@ -587,16 +581,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		@Override
 		public void onApplicationReceived(String groupId, String groupName, String applyer, String reason) {
 			
-			// 用户申请加入群聊
-			InviteMessage msg = new InviteMessage();
-			msg.setFrom(applyer);
-			msg.setTime(System.currentTimeMillis());
-			msg.setGroupId(groupId);
-			msg.setGroupName(groupName);
-			msg.setReason(reason);
-			Log.d(TAG, applyer + " 申请加入群聊：" + groupName);
-			msg.setStatus(InviteMesageStatus.BEAPPLYED);
-			notifyNewIviteMessage(msg);
 		}
 
 		@Override
@@ -639,8 +623,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	 * 
 	 * @param msg
 	 */
-	private void notifyNewIviteMessage(InviteMessage msg) {
-		saveInviteMsg(msg);
+	private void notifyNewIviteMessage() {
 		// 提示有新消息
 		HXSDKHelper.getInstance().getNotifier().viberateAndPlayTone(null);
 
@@ -651,19 +634,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 //			contactListFragment.refresh();
 	}
 
-	/**
-	 * 保存邀请等msg
-	 * 
-	 * @param msg
-	 */
-	private void saveInviteMsg(InviteMessage msg) {
-		// 保存msg
-		inviteMessgeDao.saveMessage(msg);
-		// 未读数加1
-//		User user = DemoApplication.getInstance().getContactList().get(Constant.NEW_FRIENDS_USERNAME);
-//		if (user.getUnreadMsgCount() == 0)
-//			user.setUnreadMsgCount(user.getUnreadMsgCount() + 1);
-	}
 
 	/**
 	 * set head

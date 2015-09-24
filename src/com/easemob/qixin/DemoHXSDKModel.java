@@ -16,7 +16,6 @@ package com.easemob.qixin;
 import android.content.Context;
 
 import com.easemob.applib.model.DefaultHXSDKModel;
-import com.easemob.qixin.db.DemoDBManager;
 
 public class DemoHXSDKModel extends DefaultHXSDKModel{
 
@@ -27,10 +26,6 @@ public class DemoHXSDKModel extends DefaultHXSDKModel{
     // demo will switch on debug mode
     public boolean isDebugMode(){
         return true;
-    }
-    
-    public void closeDB() {
-        DemoDBManager.getInstance().closeDB();
     }
     
     @Override

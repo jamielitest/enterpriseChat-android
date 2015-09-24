@@ -332,7 +332,6 @@ public class DemoHXSDKHelper extends HXSDKHelper{
 
             @Override
             public void onSuccess() {
-                getModel().closeDB();
                 ParseManager.getInstance().logout();
                 if(callback != null){
                     callback.onSuccess();

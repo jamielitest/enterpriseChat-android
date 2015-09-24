@@ -42,7 +42,6 @@ import com.easemob.qixin.Constant;
 import com.easemob.qixin.DemoApplication;
 import com.easemob.qixin.R;
 import com.easemob.qixin.adapter.ChatAllHistoryAdapter;
-import com.easemob.qixin.db.InviteMessgeDao;
 import com.easemob.qixin.widget.AddPopupWindow;
 
 /**
@@ -190,8 +189,6 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 		EMConversation tobeDeleteCons = adapter.getItem(((AdapterContextMenuInfo) item.getMenuInfo()).position);
 		// 删除此会话
 		EMChatManager.getInstance().deleteConversation(tobeDeleteCons.getUserName(), tobeDeleteCons.isGroup(), deleteMessage);
-		InviteMessgeDao inviteMessgeDao = new InviteMessgeDao(getActivity());
-		inviteMessgeDao.deleteMessage(tobeDeleteCons.getUserName());
 		adapter.remove(tobeDeleteCons);
 		adapter.notifyDataSetChanged();
 
