@@ -153,7 +153,7 @@
                 android:fastScrollEnabled="false"
                 android:scrollbars="none" />
 
-            <com.easemob.chatuidemo.widget.Sidebar
+            <com.easemob.qixin.widget.Sidebar
                 android:id="@+id/sidebar"
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
@@ -176,25 +176,6 @@
                 android:visibility="invisible" />
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone" >
-
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/now_refresh_list" />
-        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

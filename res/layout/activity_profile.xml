@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EFEFF4"
@@ -36,11 +37,11 @@
 	            android:layout_marginRight="10dp"
 	            />
 	        
-	        <ImageView 
+	        <com.easemob.qixin.widget.CircleImageView 
+	            android:id="@+id/iv_avatar"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_centerVertical="true"
-	            android:padding="5dp"
 	            android:src="@drawable/default_avatar"
 	            android:layout_alignParentRight="true"
 	            android:layout_marginRight="20dp"
@@ -75,6 +76,7 @@
 	            android:layout_marginRight="10dp"
 	            />
 	        <TextView 
+	            android:id="@+id/tv_nick"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_centerVertical="true"
