@@ -20,7 +20,7 @@ public class QXUser extends ParseUser{
 	public static final String PROP_MOBILE = "mobile";
 	public static final String PROP_TELEPHONE = "telephone";
 	public static final String PROP_EMAIL = "email";
-	public static final String PROP_HXID = "hxid";
+	public static final String PROP_HXID = "eid";
 	public static final String PROP_HEADER = "header";
 	public static final String PROP_PERMISSIONS = "permissions";
 	public static final String PROP_ATTRIBUTES = "attributes";
@@ -51,7 +51,6 @@ public class QXUser extends ParseUser{
 			return;
 		}
 		put(PROP_HXID, hxid);
-//		setObjectId(hxid);
 	}
 
 	public String getNick() {

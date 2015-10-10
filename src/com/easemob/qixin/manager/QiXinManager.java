@@ -90,6 +90,17 @@ public class QiXinManager {
 	}
 	
 	
+	public void updateQXUser(String nick){
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		if (db.isOpen()) {
+			ContentValues values = new ContentValues();
+			values.put(Contract.ContractUserTable.COLUMN_NAME_NICK, nick);
+			db.update(Contract.ContractUserTable.TABLE_NAME, values, Contract.ContractUserTable.COLUMN_NAME_HXID + " = ? ", new String[]{((QXUser)QXUser.getCurrentUser()).getHXid()});
+		}else {
+			 throw new RuntimeException("db is not open");
+		}
+	}
+	
 	
 	public List<DepartmentEntity> loadDepartments(){
 		List<DepartmentEntity> departments = new ArrayList<DepartmentEntity>();

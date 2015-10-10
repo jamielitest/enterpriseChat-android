@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -21,8 +22,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.easemob.qixin.DemoApplication;
 import com.easemob.qixin.R;
+import com.easemob.qixin.activity.PersonalInfoActivity;
 import com.easemob.qixin.parse.DepartmentEntity;
+import com.easemob.qixin.parse.QXUser;
 
 public class DepartmentAdapter extends BaseAdapter{
 
@@ -208,20 +212,29 @@ public class DepartmentAdapter extends BaseAdapter{
 //	                }else{
 //	                    holder= (ViewHolder) convertView.getTag();
 //	                }
-			        holder.name.setText(item);
-//			        if(!TextUtils.isEmpty(user.getSignature())){
-//	                    holder.signature.setVisibility(View.VISIBLE);
-//	                    holder.signature.setText(user.getSignature());
-//	                }else{
-//	                    holder.signature.setVisibility(View.GONE);
-//	                }
+	                    for (QXUser user : DemoApplication.getInstance().getAllUsers()) {
+	                    	if (user.getHXid().equals(item)) {
+	                    		if (!TextUtils.isEmpty(user.getNick())) {
+	                    			holder.name.setText(user.getNick());
+								}else {
+									holder.name.setText(user.getUsername());
+								}
+	                    	}
+							
+	                    	if(!TextUtils.isEmpty(user.getSignature())){
+	                    		holder.signature.setVisibility(View.VISIBLE);
+	                    		holder.signature.setText(user.getSignature());
+	                    	}else{
+	                    		holder.signature.setVisibility(View.GONE);
+	                    	}
+						}
 			        holder.avatar.setImageResource(R.drawable.default_avatar);
 			        
 			        convertView.setOnClickListener(new OnClickListener() {
 						
 						@Override
 						public void onClick(View v) {
-//							mContext.startActivity(new Intent(mContext,PersonalInfoActivity.class).putExtra("userId", user.getObjectId()));
+							mContext.startActivity(new Intent(mContext,PersonalInfoActivity.class).putExtra("userId", item));
 						}
 					});
 			    } 
@@ -229,7 +242,5 @@ public class DepartmentAdapter extends BaseAdapter{
 		
 		return convertView;
 	}
-	
-	
 	
 }

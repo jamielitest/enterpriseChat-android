@@ -8,6 +8,7 @@ import cn.qixin.utils.MD5Util;
 import com.easemob.EMValueCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.exceptions.EaseMobException;
+import com.easemob.qixin.DemoApplication;
 import com.easemob.util.EMLog;
 import com.parse.LogInCallback;
 import com.parse.Parse;
@@ -27,6 +28,7 @@ public class ParseManager {
 	
 	private static final String CONFIG_NICK = "nick";
 	private static final String CONFIG_AVATAR = "avatar";
+	private static final String CONFIG_HXID = "eid";
 
 	private ParseManager() {
 	}
@@ -53,6 +55,7 @@ public class ParseManager {
 		user.setPassword(password);
 		user.signUp();
 		String objectId = user.getObjectId();
+		updateParseHXid(objectId);
 		String lowObjectId = objectId.toLowerCase();
 		EMChatManager.getInstance().createAccountOnServer(lowObjectId, MD5Util.string2MD5(lowObjectId));
 	}
@@ -75,11 +78,25 @@ public class ParseManager {
 		});
 	}
 	
+	private boolean updateParseHXid(String hxid){
+		QXUser pUser = (QXUser) QXUser.getCurrentUser();
+		try {
+			pUser.put(CONFIG_HXID, hxid);
+			pUser.save();
+			return true;
+		} catch (ParseException e) {
+			e.printStackTrace();
+			EMLog.e(TAG, "parse register eid error " + e.getMessage());
+		}
+		return false;
+	}
+	
 	public boolean updateParseNickName(final String nickname) {
 		QXUser pUser = (QXUser) QXUser.getCurrentUser();
 		try {
 			pUser.put(CONFIG_NICK, nickname);
 			pUser.save();
+			DemoApplication.getInstance().getQXManager().updateQXUser(nickname);
 			return true;
 		} catch (ParseException e) {
 			e.printStackTrace();

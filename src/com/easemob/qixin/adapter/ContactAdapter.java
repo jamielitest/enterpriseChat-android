@@ -87,7 +87,7 @@ public class ContactAdapter extends ArrayAdapter<QXUser> implements
 		QXUser user = getItem(position);
 		if (user == null)
 			Log.d("ContactAdapter", position + "");
-		// 设置nick，demo里不涉及到完整user，用username代替nick显示
+		
 		String username = user.getUsername();
 		String nick = user.getNick();
 		String header = user.getHeader();

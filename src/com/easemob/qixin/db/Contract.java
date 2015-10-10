@@ -20,7 +20,7 @@ public class Contract {
 		public static final String COLUMN_NAME_ID = "username";
 		public static final String COLUMN_NAME_NICK = "nick";
 		public static final String COLUMN_NAME_SIGNATURE = "signature";
-		public static final String COLUMN_NAME_HXID = "hxid";
+		public static String COLUMN_NAME_HXID = "hxid";
 		public static final String COLUMN_NAME_AVATORURL = "avatarurl";
 		public static final String COLUMN_NAME_EMAIL = "email";
 		public static final String COLUMN_NAME_MOBILE = "mobile";

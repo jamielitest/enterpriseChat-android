@@ -169,11 +169,6 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		
 		
 		logoutBtn = (Button) getView().findViewById(R.id.btn_logout);
-		if(!TextUtils.isEmpty(user.getNick())){
-			logoutBtn.setText(getString(R.string.button_logout) + "(" + user.getNick() + ")");
-		}else {
-			logoutBtn.setText(getString(R.string.button_logout) + "(" + user.getUsername() + ")");
-		}
 
 		textview1 = (TextView) getView().findViewById(R.id.textview1);
 		textview2 = (TextView) getView().findViewById(R.id.textview2);
@@ -404,6 +399,12 @@ public class SettingsFragment extends Fragment implements OnClickListener {
     @Override
     public void onResume() {
     	super.onResume();
+    	if(!TextUtils.isEmpty(user.getNick())){
+			logoutBtn.setText(getString(R.string.button_logout) + "(" + user.getNick() + ")");
+		}else {
+			logoutBtn.setText(getString(R.string.button_logout) + "(" + user.getUsername() + ")");
+		}
+    	
     	Picasso.with(getActivity()).load(user.getAvatorUrl()).placeholder(R.drawable.default_avatar).error(R.drawable.default_avatar).into(ivAvatar);
     	
 		txtNick.setText(user.getNick());
