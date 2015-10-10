@@ -17,7 +17,6 @@ public class QXUser extends ParseUser{
 	public static final String PROP_NICK = "nick";
 	public static final String PROP_SIGNATURE = "signature";
 	public static final String PROP_AVATAR_URL = "avatarurl";
-	public static final String PROP_DEPARTMENT = "department";
 	public static final String PROP_MOBILE = "mobile";
 	public static final String PROP_TELEPHONE = "telephone";
 	public static final String PROP_EMAIL = "email";
@@ -44,7 +43,6 @@ public class QXUser extends ParseUser{
 	}
 
 	public String getHXid() {
-//		return getString(PROP_HXID);
 		return getObjectId();
 	}
 
@@ -53,7 +51,7 @@ public class QXUser extends ParseUser{
 			return;
 		}
 		put(PROP_HXID, hxid);
-		setObjectId(hxid);
+//		setObjectId(hxid);
 	}
 
 	public String getNick() {
@@ -139,15 +137,6 @@ public class QXUser extends ParseUser{
 	public void setTelephone(String value) {
 		if(value != null)
 			put(PROP_TELEPHONE, value);
-	}
-
-	public void setOrganization(String value) {
-		if(value != null)
-			put(PROP_DEPARTMENT, value);
-	}
-
-	public String getOrganization() {
-		return getString(PROP_DEPARTMENT);
 	}
 
 	public void setProperty(String key, int value) {
@@ -311,7 +300,6 @@ public class QXUser extends ParseUser{
 	        allAttr.put(PROP_NICK, getNick());
 	        allAttr.put(PROP_SIGNATURE, getSignature());
 	        allAttr.put(PROP_AVATAR_URL, getAvatorUrl());
-	        allAttr.put(PROP_DEPARTMENT, getOrganization());
 	        allAttr.put(PROP_EMAIL, getEmail());
 	        allAttr.put(PROP_TELEPHONE, getTelephone());
 	        allAttr.put(PROP_HXID, getHXid());

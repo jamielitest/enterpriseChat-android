@@ -20,8 +20,8 @@ import com.parse.ParseUser;
 public class ParseManager {
 
 	private static final String TAG = ParseManager.class.getSimpleName();
-	private static final String ParseAppID = "nq42ird0okwWDv5njbN8Ik1kx2GFtVPjdAobqu0Q";
-	private static final String ParseClientKey = "gFpw2kLLjE5Tpw16olqCF1zdYtR6mMoalUXarCJi";
+	private static final String ParseAppID = "7DLXNCIyH8VEF6viPJpV0UFxF22TuG8X7YYmZl7k";
+	private static final String ParseClientKey = "zXjrAFkCg4kSKkFKFRBl7kV0YEVqK7MQ9SbOugCK";
 	private Context appContext;
 	private static ParseManager instance = new ParseManager();
 	
@@ -51,7 +51,6 @@ public class ParseManager {
 		QXUser user = new QXUser();
 		user.setUsername(username);
 		user.setPassword(password);
-		user.setOrganization("/根");
 		user.signUp();
 		String objectId = user.getObjectId();
 		String lowObjectId = objectId.toLowerCase();
@@ -122,6 +121,4 @@ public class ParseManager {
 		ParseQuery<DepartmentEntity> query = ParseQuery.getQuery(DepartmentEntity.class);
 		return query.find();
 	}
-	
-	
 }

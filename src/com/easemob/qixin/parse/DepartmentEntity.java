@@ -1,45 +1,77 @@
 package com.easemob.qixin.parse;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.util.Log;
+
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
-@ParseClassName("depart")
-public class DepartmentEntity extends ParseObject {
 
-	private static final String PROP_NAME = "name";
-	private static final String PROP_PARENT = "parent";
-	private static final String PROP_ADMIN = "admin";
-//	private static final String PROP_ID = "id";
+@ParseClassName("DEPARTMENT")
+public class DepartmentEntity extends ParseObject{
 
-	public DepartmentEntity() {
+	private String DEPARTMENT_ID = "departmentId";
+	private String DEPARTMENT_NAME = "departmentName";
+	private String DEPARTMENT_MEMBERS = "departmentMembers";
+	private String DEPARTMENT_SUB_ID = "departmentSubIds";
+	private String DEPARTMENT_SUP_ID = "departmentSupId";
+	
+	public DepartmentEntity(){
+		
 	}
-
-	public void setName(String name) {
-		if (name != null)
-			put(PROP_NAME, name);
+	
+	public void setDepartmentId(String departmentId){
+		put(DEPARTMENT_ID, departmentId);
 	}
-
-	public String getName() {
-		return getString(PROP_NAME);
+	
+	public String getDepartmentId(){
+		return getString(DEPARTMENT_ID);
 	}
-
-	public void setParent(String parent) {
-		if (parent != null) {
-			put(PROP_PARENT, parent);
+	
+	public void setDepartmentName(String departmentName){
+		put(DEPARTMENT_NAME, departmentName);
+	}
+	
+	public String getDepartmentName(){
+		return getString(DEPARTMENT_NAME);
+	}
+	
+	public void setDepartmentMembers(String departmentMembers){
+		put(DEPARTMENT_MEMBERS, departmentMembers);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getDepartmentMembers(){
+		List<String> list = new ArrayList<String>();
+		if (getList(DEPARTMENT_MEMBERS) == null) {
+			return list;
+		}else {
+			list.addAll((List<String>) get(DEPARTMENT_MEMBERS));
 		}
+		return list;
 	}
-
-	public String getParent() {
-		return getString(PROP_PARENT);
+	
+	public void setDepartmentSubId(String departmentList){
+		put(DEPARTMENT_SUB_ID, departmentList);
 	}
-
-	public String getAdmin() {
-		return getString(PROP_ADMIN);
-	}
-
-	public void setAdmin(String admin) {
-		if (admin != null) {
-			put(PROP_ADMIN, admin);
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getDepartmentSubId(){
+		List<String> list = new ArrayList<String>();
+		if (getList(DEPARTMENT_SUB_ID) == null) {
+			return list;
+		}else {
+			list.addAll((List<String>) get(DEPARTMENT_SUB_ID));
 		}
+		return list;
 	}
-
+	
+	public void setDepartmentSupId(String departmentSupId){
+		put(DEPARTMENT_SUP_ID, departmentSupId);
+	}
+	
+	public String getDepartmentSupId(){
+		return getString(DEPARTMENT_SUP_ID);
+	}
 }

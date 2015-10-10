@@ -3,8 +3,6 @@ package com.easemob.qixin.manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.ContentValues;
@@ -22,7 +20,6 @@ import com.easemob.qixin.parse.ParseManager;
 import com.easemob.qixin.parse.QXUser;
 import com.easemob.util.EMLog;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 
 public class QiXinManager {
 	
@@ -37,9 +34,15 @@ public class QiXinManager {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
         if(db.isOpen()){
             ContentValues values = new ContentValues();
-            values.put(Contract.DepartTable.COLUMN_NAME_DEPART_NAME, department.getName());
-            values.put(Contract.DepartTable.COLUMN_NAME_PARENT,department.getParent());
-            values.put(Contract.DepartTable.COLUMN_NAME_ADMIN, department.getAdmin());
+            values.put(Contract.DepartTable.COLUMN_NAME_DEPART_NAME, department.getDepartmentName());
+            values.put(Contract.DepartTable.COLUMN_NAME_DEPART_ID,department.getDepartmentId());
+            try {
+				values.put(Contract.DepartTable.COLUMN_NAME_MEMBERS, department.getDepartmentMembers().toString());
+				values.put(Contract.DepartTable.COLUMN_NAME_DEPART_SUB_ID, department.getDepartmentSubId().toString());
+				values.put(Contract.DepartTable.COLUMN_NAME_DEPART_SUP_ID, department.getDepartmentSupId().toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
             db.insert(Contract.DepartTable.TABLE_NAME, null, values);
         }else{
             throw new RuntimeException("db is not open");
@@ -77,7 +80,6 @@ public class QiXinManager {
             values.put(Contract.ContractUserTable.COLUMN_NAME_ID, user.getUsername());
             values.put(Contract.ContractUserTable.COLUMN_NAME_MOBILE, user.getMobile());
             values.put(Contract.ContractUserTable.COLUMN_NAME_NICK, user.getNick());
-            values.put(Contract.ContractUserTable.COLUMN_NAME_ORGANIZATION, user.getOrganization());
             values.put(Contract.ContractUserTable.COLUMN_NAME_PERMISSION, user.getPermissions());
             values.put(Contract.ContractUserTable.COLUMN_NAME_SIGNATURE, user.getSignature());
             values.put(Contract.ContractUserTable.COLUMN_NAME_TELEPHONE, user.getTelephone());
@@ -99,9 +101,11 @@ public class QiXinManager {
 				if(cursor.moveToFirst()){
 					do{
 						DepartmentEntity department = new DepartmentEntity();
-						department.setName(cursor.getString(cursor.getColumnIndex(Contract.DepartTable.COLUMN_NAME_DEPART_NAME)));
-						department.setParent(cursor.getString(cursor.getColumnIndex(Contract.DepartTable.COLUMN_NAME_PARENT)));
-						department.setAdmin(cursor.getString(cursor.getColumnIndex(Contract.DepartTable.COLUMN_NAME_ADMIN)));
+						department.setDepartmentName(cursor.getString(cursor.getColumnIndex(Contract.DepartTable.COLUMN_NAME_DEPART_NAME)));
+						department.setDepartmentId(cursor.getString(cursor.getColumnIndex(Contract.DepartTable.COLUMN_NAME_DEPART_ID)));
+						department.setDepartmentMembers(cursor.getString(cursor.getColumnIndex(Contract.DepartTable.COLUMN_NAME_MEMBERS)));
+						department.setDepartmentSubId(cursor.getString(cursor.getColumnIndex(Contract.DepartTable.COLUMN_NAME_DEPART_SUB_ID)));
+						department.setDepartmentSupId(cursor.getString(cursor.getColumnIndex(Contract.DepartTable.COLUMN_NAME_DEPART_SUP_ID)));
 						departments.add(department);
 					}while(cursor.moveToNext());
 				}
@@ -138,7 +142,6 @@ public class QiXinManager {
                         user.setHXid(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_HXID)));
                         user.setMobile(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_MOBILE)));
                         user.setNick(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_NICK)));
-                        user.setOrganization(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_ORGANIZATION)));
                         user.setPermissions(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_PERMISSION)));
                         user.setSignature(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_SIGNATURE)));
                         user.setTelephone(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_TELEPHONE)));
@@ -181,9 +184,9 @@ public class QiXinManager {
 					} catch (Exception e) {
 						EMLog.e("###", e.getMessage());
 					}
+					user.setHXid(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_HXID)));
 					user.setMobile(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_MOBILE)));
 					user.setNick(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_NICK)));
-					user.setOrganization(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_ORGANIZATION)));
 					user.setPermissions(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_PERMISSION)));
 					user.setSignature(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_SIGNATURE)));
 					user.setTelephone(cursor.getString(cursor.getColumnIndex(Contract.ContractUserTable.COLUMN_NAME_TELEPHONE)));
@@ -206,19 +209,6 @@ public class QiXinManager {
 			}
 		}
 		return user;
-	}
-	
-	public void saveDepartmentData(){
-		String strData = "{\"data\":{\"sub_departs\":[{\"sub_departs\":[{\"sub_departs\":[],\"managers\":[],\"name\":\"\u73af\u4fe1\",\"users\":[{\"user_id\":\"54c34182ea0e821bc81a2f65\",\"name\":\"\u9ece\u5fd7\u5e73\",\"huanxin\":\"lzp:123456\"}]}],\"managers\":[],\"name\":\"\u5916\u90e8\",\"users\":[]},{\"sub_departs\":[{\"sub_departs\":[],\"managers\":[],\"name\":\"\u670d\u52a1\u5668\",\"users\":[{\"user_id\":\"54c33fccea0e821bc81a2f5e\",\"name\":\"\u5b8b\u9e4f\u98de\",\"huanxin\":\"spf:123456\"}]},{\"sub_departs\":[],\"managers\":[],\"name\":\"\u5b89\u5353\",\"users\":[{\"user_id\":\"54c340b2ea0e821bc81a2f60\",\"name\":\"\u9648\u632f\u5174\",\"huanxin\":\"czx:123456\"},{\"user_id\":\"54c3415bea0e821bc81a2f64\",\"name\":\"\u97e9\u5a01\",\"huanxin\":\"hw:123456\"}]},{\"sub_departs\":[],\"managers\":[],\"name\":\"ios\",\"users\":[{\"user_id\":\"54c34103ea0e821bc81a2f62\",\"name\":\"\u5f20\u632f\u680b\",\"huanxin\":\"zzd:123456\"},{\"user_id\":\"54c34081ea0e821bc81a2f5f\",\"name\":\"\u7f57\u884e\",\"huanxin\":\"lk:123456\"}]}],\"managers\":[],\"name\":\"\u8f6f\u4ef6\",\"users\":[]},{\"sub_departs\":[],\"managers\":[],\"name\":\"\u7ba1\u7406\u90e8\",\"users\":[{\"user_id\":\"54c341a0ea0e821bc81a2f66\",\"name\":\"\u9ad8\u9f50\",\"huanxin\":\"gq:123456\"},{\"user_id\":\"54c34132ea0e821bc81a2f63\",\"name\":\"\u9ad8\u7adf\u6ea2\",\"huanxin\":\"gjy:123456\"},{\"user_id\":\"54c341b6ea0e821bc81a2f67\",\"name\":\"\u4e01\u6c38\u5f3a\",\"huanxin\":\"dyq:123456\"}]},{\"sub_departs\":[],\"managers\":[],\"name\":\"\u8bbe\u8ba1\",\"users\":[{\"user_id\":\"54c340e4ea0e821bc81a2f61\",\"name\":\"\u738b\u535a\",\"huanxin\":\"wb:123456\"}]}],\"managers\":[],\"name\":\"\u6839\",\"users\":[]},\"error_description\":\"\",\"error\":0}";
-        try {
-            JSONObject jsonObject = new JSONObject(strData);
-            JSONObject jsonRoot = jsonObject.getJSONObject("data");
-            deleteAllQXUser();
-            deleteAllDepartment();
-            parseJsonSaveUser(jsonRoot,"/");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 	}
 	
 	public void saveUserAndDepart(final EMCallBack callback){
@@ -257,115 +247,4 @@ public class QiXinManager {
 	
 	
 	
-	public void parseJsonSaveUser(JSONObject jsonRoot,String parent){
-		try {
-            JSONArray  jsonRootManagers = jsonRoot.getJSONArray("managers");
-            String rootManagerStr="";
-            rootManagerStr= jsonRootManagers.join(",");
-            String name = jsonRoot.getString("name");
-            String departname = parent + (parent.endsWith("/")?name:"/"+name);
-            JSONArray jsonArrUsers = jsonRoot.getJSONArray("users");
-            if(jsonRoot.has("sub_departs")){
-                JSONArray jsonArr=jsonRoot.getJSONArray("sub_departs");
-                parseJsonArraySaveUser(jsonArr,departname);
-            }
-            for (int i = 0; i < jsonArrUsers.length() ; i++) {
-                JSONObject jsonUser = jsonArrUsers.getJSONObject(i);
-                QXUser user = new QXUser();
-                user.setUserName(jsonUser.getString("user_id"));
-                user.setNick(jsonUser.getString("name"));
-                user.setHXid(jsonUser.getString("huanxin"));
-                user.setOrganization(departname);
-                saveQXUser(user);
-            }
-            DepartmentEntity departEntity = new DepartmentEntity();
-            departEntity.setAdmin("");
-            departEntity.setName(name);
-            departEntity.setParent(parent);
-            saveDepartment(departEntity);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-		
-	}
-	
-	public void parseJsonArraySaveUser(JSONArray jsonArrSub, String departname) {
-		try {
-			for (int i = 0; i < jsonArrSub.length(); i++) {
-				JSONObject jsonRoot = jsonArrSub.getJSONObject(i);
-				parseJsonSaveUser(jsonRoot, departname);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public String getDepartmentName(String path){
-		return path.substring(path.lastIndexOf("/")+1, path.length());
-	}
-	
-	public List<QXUser> getUsersWithDepartment(List<QXUser> allUsers, String departmentPath) {
-		List<QXUser> resultList = new ArrayList<QXUser>();
-		for (QXUser qxUser : allUsers) {
-			String[] departs;
-			String strDepartment = qxUser.getOrganization();
-			if (strDepartment != null && strDepartment.contains(",")) {
-				departs = strDepartment.trim().split(",");
-			} else {
-				departs = new String[] { strDepartment };
-			}
-			for (String depart : departs) {
-				if (departmentPath.equals(depart)) {
-					resultList.add(qxUser);
-					break;
-				}
-			}
-
-		}
-		return resultList;
-	}
-	
-	
-	public static int getUserCountWithDepartment(List<QXUser> allUsers, String departmentPath) {
-		int count = 0;
-		for (QXUser qxUser : allUsers) {
-			String[] departs;
-			String strDepartment = qxUser.getOrganization();
-			if (strDepartment != null && strDepartment.contains(",")) {
-				departs = strDepartment.trim().split(",");
-			} else {
-				departs = new String[] { strDepartment };
-			}
-
-			for (String depart : departs) {
-				if (depart != null && depart.startsWith(departmentPath)) {
-					count++;
-				}
-			}
-
-		}
-		return count;
-	}
-	
-	
-	
-	
-	 public List<String> getChildDepartments(String path){
-	        List<String> resultList = new ArrayList<String>();
-	        List<DepartmentEntity> departments = null; 
-	        for (DepartmentEntity targetDepartment : departments) {
-	            if(path.equals(targetDepartment.getParent())){
-	                String departmentFullPath = targetDepartment.getParent() + (targetDepartment.getParent().endsWith("/") ? targetDepartment.getName() : "/" + targetDepartment.getName());
-	                resultList.add(departmentFullPath);
-	            }
-	        }
-	        return resultList;
-	    }
-	
-	
-	
-	
-	
-	
-
 }

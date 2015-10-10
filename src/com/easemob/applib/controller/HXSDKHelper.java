@@ -493,7 +493,6 @@ public abstract class HXSDKHelper {
                         callback.onError(e.getErrorCode(), e.toString());
                     }
                 }
-            
             }
         }.start();
     }

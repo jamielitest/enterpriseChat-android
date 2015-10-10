@@ -2,9 +2,9 @@ package com.easemob.qixin.activity;
 
 import java.util.List;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,15 +13,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easemob.applib.controller.HXSDKHelper;
 import com.easemob.qixin.DemoApplication;
 import com.easemob.qixin.R;
 import com.easemob.qixin.activity.contact.adapter.DepartmentAdapter;
-import com.easemob.qixin.domain.Sub_Depart;
-import com.easemob.qixin.utils.CommonUtils;
+import com.easemob.qixin.parse.DepartmentEntity;
 
 public class ContactsActivity extends BaseActivity implements OnClickListener {
 
@@ -32,10 +30,7 @@ public class ContactsActivity extends BaseActivity implements OnClickListener {
 	private DepartmentAdapter adapter;
 
 	private InputMethodManager manager;
-	private ProgressDialog pd;
-	List<Sub_Depart> listDeparts;
 	private ImageButton btnBack;
-	private TextView txtTitle;
 	HXContactSyncListener contactSyncListener;
 	private LinearLayout progressBar;
 	
@@ -52,7 +47,7 @@ public class ContactsActivity extends BaseActivity implements OnClickListener {
                         refresh();
 					}else{
 						 String s1 = getResources().getString(R.string.get_failed_please_check);
-	                     Toast.makeText(ContactsActivity.this, s1, 1).show();
+	                     Toast.makeText(ContactsActivity.this, s1, Toast.LENGTH_SHORT).show();
 	                     progressBar.setVisibility(View.GONE);
 					}
 					
@@ -70,7 +65,6 @@ public class ContactsActivity extends BaseActivity implements OnClickListener {
 		btnBack = (ImageButton) findViewById(R.id.leftBtn);
 		btnBack.setVisibility(View.VISIBLE);
 		btnBack.setOnClickListener(this);
-		txtTitle = (TextView) findViewById(R.id.txtTitle);
 		progressBar = (LinearLayout)findViewById(R.id.progress_bar);
 		manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -85,10 +79,6 @@ public class ContactsActivity extends BaseActivity implements OnClickListener {
 		}
 		
 		
-		adapter = new DepartmentAdapter(this, deptListView, "/", CommonUtils.getChildDepartments("/"),
-				CommonUtils.getUsersWithDepartment(DemoApplication.getInstance().getAllUsers(), "/"));
-
-		deptListView.setAdapter(adapter);
 		deptListView.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -102,13 +92,19 @@ public class ContactsActivity extends BaseActivity implements OnClickListener {
 				return false;
 			}
 		});
+		DepartmentEntity entity = null;
+		List<DepartmentEntity> entities = DemoApplication.getInstance().getAllDepartments();
+		for (DepartmentEntity departmentEntity : entities) {
+			if (TextUtils.isEmpty(departmentEntity.getDepartmentSupId())) {
+				entity = departmentEntity;
+			}
+		} 
+		adapter = new DepartmentAdapter(this,entity,entities);
+		deptListView.setAdapter(adapter);
 
 	}
 
 	public void refresh() {
-		adapter = new DepartmentAdapter(this, deptListView, "/", CommonUtils.getChildDepartments("/"),
-				CommonUtils.getUsersWithDepartment(DemoApplication.getInstance().getAllUsers(), "/"));
-		deptListView.setAdapter(adapter);
 	}
 
 	@Override

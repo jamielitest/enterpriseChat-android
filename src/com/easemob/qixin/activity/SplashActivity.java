@@ -54,6 +54,7 @@ public class SplashActivity extends BaseActivity {
 					EMGroupManager.getInstance().loadAllGroups();
 					EMChatManager.getInstance().loadAllConversations();
 					DemoApplication.getInstance().getAllUsers();
+					DemoApplication.getInstance().getAllDepartments();
 					
 					long costTime = System.currentTimeMillis() - start;
 					//等待sleeptime时长

@@ -99,7 +99,7 @@ public class PersonalInfoActivity extends BaseActivity implements OnClickListene
 						usernameText.setText(user.getNick());
 						userText.setText(user.getNick());
 						phoneText.setText(user.getMobile());
-						departmentText.setText(user.getOrganization());
+//						departmentText.setText(user.getOrganization());
 						Picasso.with(PersonalInfoActivity.this).load(user.getAvatorUrl()).placeholder(R.drawable.default_avatar).error(R.drawable.default_avatar).into(avatarImage);
 						dialog.dismiss();
 

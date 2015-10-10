@@ -28,8 +28,10 @@ public class DbOpenHelper extends SQLiteOpenHelper{
             + Contract.DepartTable.TABLE_NAME + " ("
             + Contract.DepartTable.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + Contract.DepartTable.COLUMN_NAME_DEPART_NAME + " TEXT, "
-            + Contract.DepartTable.COLUMN_NAME_ADMIN + " TEXT, "
-            + Contract.DepartTable.COLUMN_NAME_PARENT + " TEXT); ";	
+            + Contract.DepartTable.COLUMN_NAME_DEPART_ID + " TEXT, "
+            + Contract.DepartTable.COLUMN_NAME_DEPART_SUB_ID + " TEXT, "
+            + Contract.DepartTable.COLUMN_NAME_DEPART_SUP_ID + " TEXT, "
+            + Contract.DepartTable.COLUMN_NAME_MEMBERS + " TEXT); ";	
 	
 	private static final String CONTRACTUSER_TABLE_CREATE = "CREATE TABLE "
 	        + Contract.ContractUserTable.TABLE_NAME + " ("
@@ -41,7 +43,6 @@ public class DbOpenHelper extends SQLiteOpenHelper{
 	        + Contract.ContractUserTable.COLUMN_NAME_EMAIL + " TEXT, "
 	        + Contract.ContractUserTable.COLUMN_NAME_MOBILE + " TEXT, "
 	        + Contract.ContractUserTable.COLUMN_NAME_TELEPHONE + " TEXT, "
-	        + Contract.ContractUserTable.COLUMN_NAME_ORGANIZATION + " TEXT, "
 	        + Contract.ContractUserTable.COLUMN_NAME_PERMISSION + " TEXT, "
 	        + Contract.ContractUserTable.COLUMN_NAME_HEADER + " TEXT, "
 	        + Contract.ContractUserTable.COLUMN_NAME_ATTRIBUTES + " TEXT);";

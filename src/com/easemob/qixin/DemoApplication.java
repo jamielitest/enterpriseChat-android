@@ -17,7 +17,6 @@ import java.util.List;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.easemob.EMCallBack;
 import com.easemob.qixin.manager.QiXinManager;
@@ -34,10 +33,7 @@ public class DemoApplication extends Application {
 	private List<DepartmentEntity> departments = null;
 	private QiXinManager qxManager = null;
 	private List<QXUser> allUsers = null;
-	/**
-	 * 当前用户nickname,为了苹果推送不是userid而是昵称
-	 */
-	public static String currentUserNick = "";
+	
 	public static DemoHXSDKHelper hxSDKHelper = new DemoHXSDKHelper();
 
 	@Override
@@ -118,7 +114,7 @@ public class DemoApplication extends Application {
 	}
 	
 	public synchronized List<DepartmentEntity> getAllDepartments() {
-		if (departments == null) {
+		if (departments == null || departments.size() == 0) {
 			departments = getQXManager().loadDepartments();
 		}
 		return departments;
@@ -129,7 +125,7 @@ public class DemoApplication extends Application {
 	}
 	
 	public synchronized List<QXUser> getAllUsers(){
-		if( allUsers==null){
+		if(allUsers == null || allUsers.size() == 0){
 			allUsers = getQXManager().loadAllUsers();
 		}
 		return allUsers;
