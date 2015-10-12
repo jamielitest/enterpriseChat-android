@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -32,7 +33,6 @@ public class PersonalInfoActivity extends BaseActivity implements OnClickListene
 	private LinearLayout sendLayout;
 	private String userid;
 	private QXUser user;
-	private ProgressDialog dialog;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -65,8 +65,19 @@ public class PersonalInfoActivity extends BaseActivity implements OnClickListene
 		sendLayout.setOnClickListener(this);
 		
 		
-		dialog = ProgressDialog.show(this, "loading...", "");
-		loadUser();
+		for (QXUser qxuser : DemoApplication.getInstance().getAllUsers()) {
+			if (qxuser.getHXid().equals(userid)) {
+				user = qxuser;
+			}
+		}
+		
+		usernameText.setText(user.getNick());
+		userText.setText(user.getNick());
+		phoneText.setText(user.getMobile());
+//		departmentText.setText(user.getOrganization());
+		Picasso.with(PersonalInfoActivity.this).load(user.getAvatorUrl()).placeholder(R.drawable.default_avatar).error(R.drawable.default_avatar).into(avatarImage);
+
+	
 		
 	}
 
@@ -81,7 +92,11 @@ public class PersonalInfoActivity extends BaseActivity implements OnClickListene
 			break;
 	
 		case R.id.ll_send_msg:
-			startActivity(new Intent(PersonalInfoActivity.this,ChatActivity.class).putExtra("userId", userid).putExtra("nick", user.getNick()));
+			if (!TextUtils.isEmpty(user.getNick())) {
+				startActivity(new Intent(PersonalInfoActivity.this,ChatActivity.class).putExtra("userId", userid).putExtra("nick", user.getNick()));
+			}else {
+				startActivity(new Intent(PersonalInfoActivity.this,ChatActivity.class).putExtra("userId", userid).putExtra("nick", user.getUsername()));
+			}
 			break;
 
 		default:
@@ -89,23 +104,4 @@ public class PersonalInfoActivity extends BaseActivity implements OnClickListene
 		}
 	}
 	
-	private void loadUser(){
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				user = DemoApplication.getInstance().getQXManager().loadSingleUser(userid);
-				runOnUiThread(new Runnable() {
-					public void run() {
-						usernameText.setText(user.getNick());
-						userText.setText(user.getNick());
-						phoneText.setText(user.getMobile());
-//						departmentText.setText(user.getOrganization());
-						Picasso.with(PersonalInfoActivity.this).load(user.getAvatorUrl()).placeholder(R.drawable.default_avatar).error(R.drawable.default_avatar).into(avatarImage);
-						dialog.dismiss();
-
-					}
-				});
-			}
-		}).start();
-	}
 }

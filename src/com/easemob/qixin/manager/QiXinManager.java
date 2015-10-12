@@ -76,7 +76,7 @@ public class QiXinManager {
 			values.put(Contract.ContractUserTable.COLUMN_NAME_AVATORURL, user.getAvatorUrl());
             values.put(Contract.ContractUserTable.COLUMN_NAME_EMAIL, user.getEmail());
             values.put(Contract.ContractUserTable.COLUMN_NAME_HEADER, user.getHeader());
-            values.put(Contract.ContractUserTable.COLUMN_NAME_HXID, user.getHXid());
+            values.put(Contract.ContractUserTable.COLUMN_NAME_HXID, user.getHXid().toLowerCase());
             values.put(Contract.ContractUserTable.COLUMN_NAME_ID, user.getUsername());
             values.put(Contract.ContractUserTable.COLUMN_NAME_MOBILE, user.getMobile());
             values.put(Contract.ContractUserTable.COLUMN_NAME_NICK, user.getNick());
@@ -95,7 +95,7 @@ public class QiXinManager {
 		if (db.isOpen()) {
 			ContentValues values = new ContentValues();
 			values.put(Contract.ContractUserTable.COLUMN_NAME_NICK, nick);
-			db.update(Contract.ContractUserTable.TABLE_NAME, values, Contract.ContractUserTable.COLUMN_NAME_HXID + " = ? ", new String[]{((QXUser)QXUser.getCurrentUser()).getHXid()});
+			db.update(Contract.ContractUserTable.TABLE_NAME, values, Contract.ContractUserTable.COLUMN_NAME_HXID + " = ? ", new String[]{((QXUser)QXUser.getCurrentUser()).getHXid().toLowerCase()});
 		}else {
 			 throw new RuntimeException("db is not open");
 		}

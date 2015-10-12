@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,7 +56,6 @@ public class SplashActivity extends BaseActivity {
 					EMChatManager.getInstance().loadAllConversations();
 					DemoApplication.getInstance().getAllUsers();
 					DemoApplication.getInstance().getAllDepartments();
-					
 					long costTime = System.currentTimeMillis() - start;
 					//等待sleeptime时长
 					if (sleepTime - costTime > 0) {

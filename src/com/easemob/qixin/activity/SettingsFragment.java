@@ -39,6 +39,7 @@ import com.easemob.qixin.DemoHXSDKModel;
 import com.easemob.qixin.R;
 import com.easemob.qixin.parse.QXUser;
 import com.easemob.qixin.utils.ImageCache;
+import com.easemob.qixin.widget.CircleImageView;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -128,7 +129,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	
 	
 	private RelativeLayout rlProfile;
-	private ImageView ivAvatar;
+	private CircleImageView ivAvatar;
 	private TextView txtNick;
 	
 	DemoHXSDKModel model;
@@ -151,7 +152,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		rl_switch_speaker = (RelativeLayout) getView().findViewById(R.id.rl_switch_speaker);
 		rl_switch_chatroom_leave = (RelativeLayout) getView().findViewById(R.id.rl_switch_chatroom_owner_leave);
 		rlProfile = (RelativeLayout) getView().findViewById(R.id.rl_profile);
-		ivAvatar = (ImageView)getView().findViewById(R.id.imAvatar);
+		ivAvatar = (CircleImageView)getView().findViewById(R.id.imAvatar);
 		txtNick = (TextView)getView().findViewById(R.id.tv_nick);
 		user = (QXUser) QXUser.getCurrentUser();
 

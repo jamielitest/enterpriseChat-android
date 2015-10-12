@@ -42,6 +42,7 @@ import com.easemob.qixin.Constant;
 import com.easemob.qixin.DemoApplication;
 import com.easemob.qixin.R;
 import com.easemob.qixin.adapter.ChatAllHistoryAdapter;
+import com.easemob.qixin.parse.QXUser;
 import com.easemob.qixin.widget.AddPopupWindow;
 
 /**
@@ -109,7 +110,18 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 				        
 				    }else{
 				        // it is single chat
+				    	String nick = null;
                         intent.putExtra("userId", username);
+                        for (QXUser user : DemoApplication.getInstance().getAllUsers()) {
+                			if (user.getHXid().equals(conversation.getUserName())) {
+                				if (user.getNick() != null) {
+                					nick = user.getNick();
+                				}else {
+                					nick = user.getUsername();
+                				}
+                				intent.putExtra("nick", nick);
+                			}
+                		}
 				    }
 				    startActivity(intent);
 				}

@@ -96,7 +96,9 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 		// 获取用户username或者群组groupid
 		String username = null;
 		for (QXUser user : DemoApplication.getInstance().getAllUsers()) {
+			Log.i("info", "hxid:"+user.getHXid()+"conversationid:"+conversation.getUserName());
 			if (user.getHXid().equals(conversation.getUserName())) {
+				Log.i("info", "username:"+user.getNick());
 				if (user.getNick() != null) {
 					username = user.getNick();
 				}else {

@@ -43,7 +43,10 @@ public class QXUser extends ParseUser{
 	}
 
 	public String getHXid() {
-		return getObjectId();
+		if (getObjectId()  != null) {
+			return getObjectId().toLowerCase();
+		}
+		return getString(PROP_HXID);
 	}
 
 	public void setHXid(String hxid) {
