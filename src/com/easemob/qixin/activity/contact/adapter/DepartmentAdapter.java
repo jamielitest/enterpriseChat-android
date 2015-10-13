@@ -213,7 +213,7 @@ public class DepartmentAdapter extends BaseAdapter{
 //	                    holder= (ViewHolder) convertView.getTag();
 //	                }
 	                    for (QXUser user : DemoApplication.getInstance().getAllUsers()) {
-	                    	if (user.getHXid().equals(item)) {
+	                    	if (user.getHXid().equals(item.toLowerCase())) {
 	                    		if (!TextUtils.isEmpty(user.getNick())) {
 	                    			holder.name.setText(user.getNick());
 								}else {
@@ -234,7 +234,7 @@ public class DepartmentAdapter extends BaseAdapter{
 						
 						@Override
 						public void onClick(View v) {
-							mContext.startActivity(new Intent(mContext,PersonalInfoActivity.class).putExtra("userId", item));
+							mContext.startActivity(new Intent(mContext,PersonalInfoActivity.class).putExtra("userId", item.toLowerCase()));
 						}
 					});
 			    } 

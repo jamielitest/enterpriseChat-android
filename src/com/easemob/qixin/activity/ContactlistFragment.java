@@ -139,7 +139,7 @@ public class ContactlistFragment extends Fragment implements OnClickListener {
 
 				startActivity(new Intent(getActivity(),
 						PersonalInfoActivity.class).putExtra("userId", adapter
-						.getItem(position).getObjectId()));
+						.getItem(position).getHXid()));
 			}
 		});
 		listView.setOnTouchListener(new OnTouchListener() {
